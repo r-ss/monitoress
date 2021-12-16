@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 import platform
-# import subprocess
+import subprocess
 
 from fastapi import status
 from fastapi_utils.cbv import cbv

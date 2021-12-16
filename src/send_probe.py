@@ -10,8 +10,19 @@ from fastapi_utils.inferring_router import InferringRouter
 
 from config import config
 
+from entity import Entity
+
+import requests
+
 router = InferringRouter(tags=['General'])
 
+from pydantic import BaseModel, UUID4, constr
+
+
+class ProbeBM(BaseModel):
+    resource: str
+    random: str
+    uptime: int
 
 @cbv(router)
 class SendProbeCBV:
@@ -20,21 +31,21 @@ class SendProbeCBV:
     @router.get('/send_probe', summary='Send Probe')
     def read(self):
 
-        
 
+        e = Entity('foldwrap, digitalocean', '167.172.164.135', expected='fold')
 
+        r = requests.get(e.url)
+        probe = ProbeBM.parse_obj(r.json())
+
+        print(probe)
+  
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                'resource': config.APP_NAME,
-                'git_revision_hash': git_revision_hash,
-                'datetime': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
-                'os': os.name,
-                'platform': platform.system(),
-                'platform_release': platform.release(),
-                'python version': platform.python_version(),
-                'testing': config.TESTING_MODE,
-                'production': config.PRODUCTION,
-                'load averages': f'{load1:.2f} {load5:.2f} {load15:.2f}'
+                'client': config.APP_NAME,
+                'time_client': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
+                'resource': probe.resource,
+                'random': probe.random,
+                'uptime': probe.uptime
             }
         )

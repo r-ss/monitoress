@@ -1,0 +1,33 @@
+16/12/2021 21:09:39 Adding job tentatively -- it will be properly scheduled when the scheduler starts
+16/12/2021 21:09:39 Added job "timer_tick" to job store "default"
+16/12/2021 21:09:39 Scheduler started
+16/12/2021 21:09:39 Looking for jobs to run
+16/12/2021 21:09:39 Next wakeup is due at 2021-12-16 21:09:42.730671+03:00 (in 2.999324 seconds)
+16/12/2021 21:09:42 Looking for jobs to run
+16/12/2021 21:09:42 Running job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:42 MSK)" (scheduled at 2021-12-16 21:09:42.730671+03:00)
+16/12/2021 21:09:42 Next wakeup is due at 2021-12-16 21:09:45.730671+03:00 (in 2.993599 seconds)
+16/12/2021 21:09:42 check_all
+16/12/2021 21:09:42 Starting new HTTP connection (1): 167.172.164.135:8999
+16/12/2021 21:09:42 http://167.172.164.135:8999 "GET /probe HTTP/1.1" 200 53
+16/12/2021 21:09:42 Job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:45 MSK)" executed successfully
+16/12/2021 21:09:45 Looking for jobs to run
+16/12/2021 21:09:45 Next wakeup is due at 2021-12-16 21:09:48.730671+03:00 (in 2.987184 seconds)
+16/12/2021 21:09:45 Running job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:48 MSK)" (scheduled at 2021-12-16 21:09:45.730671+03:00)
+16/12/2021 21:09:45 check_all
+16/12/2021 21:09:45 Starting new HTTP connection (1): 167.172.164.135:8999
+16/12/2021 21:09:45 http://167.172.164.135:8999 "GET /probe HTTP/1.1" 200 53
+16/12/2021 21:09:45 Job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:48 MSK)" executed successfully
+16/12/2021 21:09:48 Looking for jobs to run
+16/12/2021 21:09:48 Next wakeup is due at 2021-12-16 21:09:51.730671+03:00 (in 2.996574 seconds)
+16/12/2021 21:09:48 Running job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:51 MSK)" (scheduled at 2021-12-16 21:09:48.730671+03:00)
+16/12/2021 21:09:48 check_all
+16/12/2021 21:09:48 Starting new HTTP connection (1): 167.172.164.135:8999
+16/12/2021 21:09:48 http://167.172.164.135:8999 "GET /probe HTTP/1.1" 200 53
+16/12/2021 21:09:48 Job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:51 MSK)" executed successfully
+16/12/2021 21:09:51 Looking for jobs to run
+16/12/2021 21:09:51 Next wakeup is due at 2021-12-16 21:09:54.730671+03:00 (in 2.993384 seconds)
+16/12/2021 21:09:51 Running job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:54 MSK)" (scheduled at 2021-12-16 21:09:51.730671+03:00)
+16/12/2021 21:09:51 check_all
+16/12/2021 21:09:51 Starting new HTTP connection (1): 167.172.164.135:8999
+16/12/2021 21:09:51 http://167.172.164.135:8999 "GET /probe HTTP/1.1" 200 53
+16/12/2021 21:09:51 Job "timer_tick (trigger: interval[0:00:03], next run at: 2021-12-16 21:09:54 MSK)" executed successfully

@@ -1,7 +1,7 @@
 import logging
-from utils import get_script_path
+from config import config
 
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %H:%M:%S', filename=f'{get_script_path()}/log.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %H:%M:%S', filename=config.LOG_PATH, encoding='utf-8', level=logging.DEBUG)
 
 def log(message:str) -> None:
     logging.info(message)
