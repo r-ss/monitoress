@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+coverage.json
+*.cover
+.pytest_cache/
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# Personal
+snippets.txt
+task.txt
+
+.vscode
+.idea
+.DS_Store
+
+# Secrets
+.env.secrets
