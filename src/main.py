@@ -1,4 +1,5 @@
 import uvicorn
+# from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, status
 # from fastapi.testclient import TestClient
@@ -12,7 +13,10 @@ from send_probe import router as send_probe
 
 from probe_manager import ProbeManager
 
-from apscheduler.schedulers.background import BlockingScheduler
+# from apscheduler.schedulers.background import BlockingScheduler
+from apscheduler.schedulers.blocking import BlockingScheduler
+
+# load_dotenv(dotenv_path=config.SECRETS_ENV_PATH)
 
 routers = [
     info_router,
@@ -27,7 +31,7 @@ def timer_tick():
     pm.check_all()
 
 sched = BlockingScheduler(timezone=config.TIMEZONE_STRING)
-sched.add_job(timer_tick, 'interval', seconds = config.CHECKS_INTERVAL)
+sched.add_job(timer_tick, 'interval', seconds = config.CHECKS_TICK_INTERVAL)
 
 
 
@@ -44,7 +48,8 @@ for r in routers:
     app.include_router(r)
 
 
-def start():
+def start_uvicorn_server():
+    
     """Launched with `poetry run start` at root level"""
     uvicorn.run('main:app', host=config.HOST, port=config.PORT, reload=True, app_dir='src')
 
@@ -55,5 +60,6 @@ def start():
 
 if __name__ == '__main__':
     # rt = RepeatedTimer(2, timer_tick) # it auto-starts, no need of rt.start()
-    sched.start()
-    start()
+    pm.check_all()
+    sched.start()    
+    start_uvicorn_server()

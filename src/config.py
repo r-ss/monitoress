@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -15,19 +16,25 @@ load_dotenv(dotenv_path=SECRETS_ENV_PATH)
 class config:
 
     APP_NAME = 'monitoress'
+    
 
-    CHECKS_INTERVAL = 5
+    CHECKS_TICK_INTERVAL = 60
 
     # GENERAL SETTINGS AND HOSTS
     BASE_DIR: str = Path.cwd()
     PRODUCTION: bool = True
     DEBUG: bool = not PRODUCTION
-    SECRET_KEY: str = None
+    SECRET_KEY = str(os.environ.get('SECRET_KEY'))
+
+    VALIDATORS = str(os.environ.get('VALIDATORS'))
 
     HOST = '0.0.0.0'
     PORT = 8667
 
     LOG_PATH = f'{Path.cwd()}/log.log'
+
+    TELEGRAM_ENABLED = True  # Not send actual telegram messages if False
+    NOTIFICATIONS_URL = str(os.environ.get('NOTIFICATIONS_URL'))
     
     
     # TESTS

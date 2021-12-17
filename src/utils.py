@@ -2,12 +2,13 @@ import os, sys
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
+from config import config
+
 def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 def send_message(message):
-    URL = 'https://notificationservice.ress.ws/telegram'
-    request = Request(URL, urlencode({'message':message,'silent':True}).encode())
+    request = Request(config.NOTIFICATIONS_URL, urlencode({'message':message,'silent':False}).encode())
     response_json = urlopen(request).read().decode()
     return f'sended message "{message}"'
 
