@@ -31,13 +31,16 @@ class ProbeManager:
 
 
         # self.add_entity(Entity('foldwrap, digitalocean', '167.172.164.135', uri='probe', look_for='resource', expected='fold', schema=ProbeBM, interval=5*60, important=True))
-        self.add_entity(Entity('foldwrap, api', 'api.foldwrap.com', https=True, uri='info', look_for='resource', expected='info', schema=FoldWrapAPIBM, interval=5*60, important=True))
+        self.add_entity(Entity('foldwrap_api', 'api.foldwrap.com', https=True, uri='info', look_for='resource', expected='info', schema=FoldWrapAPIBM, interval=5*60, important=True))
         self.add_entity(EntityBC('validators', config.VALIDATORS, interval=15*60, important=True))
 
         pass
 
     def add_entity(self, e:Entity):
         self.entities.append(e)
+
+    def get_entity_by_index(self, index):
+        return self.entities[index]
 
     
     def check_all(self) -> None:
@@ -53,10 +56,12 @@ class ProbeManager:
             ok = e.start_routine()
             if not ok:
                 log(f'error happened with {e.name}')
+                e.fail_increment()
                 if e.important and config.TELEGRAM_ENABLED:
                     send_message(e.errors)
-                    pass
                 return
+            
+            e.success_increment()
 
             # log(f'{e.name} ok')
 

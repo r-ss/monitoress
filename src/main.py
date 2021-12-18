@@ -8,13 +8,13 @@ from fastapi import FastAPI, HTTPException, status
 
 from config import config
 
-from info import router as info_router
-from send_probe import router as send_probe
+from views.info import router as info_router
+from views.probe import router as send_probe
 
 from probe_manager import ProbeManager
 
-# from apscheduler.schedulers.background import BlockingScheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.blocking import BlockingScheduler
 
 # load_dotenv(dotenv_path=config.SECRETS_ENV_PATH)
 
@@ -30,7 +30,8 @@ def timer_tick():
     # print('timer tick')
     pm.check_all()
 
-sched = BlockingScheduler(timezone=config.TIMEZONE_STRING)
+# sched = BlockingScheduler(timezone=config.TIMEZONE_STRING)
+sched = BackgroundScheduler(timezone=config.TIMEZONE_STRING)
 sched.add_job(timer_tick, 'interval', seconds = config.CHECKS_TICK_INTERVAL)
 
 
@@ -60,6 +61,6 @@ def start_uvicorn_server():
 
 if __name__ == '__main__':
     # rt = RepeatedTimer(2, timer_tick) # it auto-starts, no need of rt.start()
-    pm.check_all()
+    # pm.check_all()
     sched.start()    
     start_uvicorn_server()

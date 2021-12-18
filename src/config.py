@@ -18,22 +18,22 @@ class config:
     APP_NAME = 'monitoress'
     
 
-    CHECKS_TICK_INTERVAL = 60
+    CHECKS_TICK_INTERVAL = 10
 
     # GENERAL SETTINGS AND HOSTS
     BASE_DIR: str = Path.cwd()
-    PRODUCTION: bool = True
+    PRODUCTION: bool = False
     DEBUG: bool = not PRODUCTION
     SECRET_KEY = str(os.environ.get('SECRET_KEY'))
 
     VALIDATORS = str(os.environ.get('VALIDATORS'))
 
     HOST = '0.0.0.0'
-    PORT = 8667
+    PORT = 9004
 
     LOG_PATH = f'{Path.cwd()}/log.log'
 
-    TELEGRAM_ENABLED = True  # Not send actual telegram messages if False
+    TELEGRAM_ENABLED = PRODUCTION  # Not send actual telegram messages if False
     NOTIFICATIONS_URL = str(os.environ.get('NOTIFICATIONS_URL'))
     
     
