@@ -31,7 +31,7 @@ class config:
     HOST = '0.0.0.0'
     PORT = 9004
 
-    LOG_PATH = f'{Path.cwd()}/log.log'
+    LOG_FILE_PATH = f'{Path.cwd()}/log.log'
 
     TELEGRAM_ENABLED = PRODUCTION  # Not send actual telegram messages if False
     NOTIFICATIONS_URL = str(os.environ.get('NOTIFICATIONS_URL'))
