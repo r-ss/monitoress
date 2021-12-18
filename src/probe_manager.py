@@ -65,12 +65,10 @@ class ProbeManager:
             ok = e.start_routine()
             if not ok:
                 log(f'error happened with {e.name}')
-                e.fail_increment()
                 if e.important and config.TELEGRAM_ENABLED:
                     send_message(e.errors)
                 return
-            
-            e.success_increment()
+
 
             # log(f'{e.name} ok')
 

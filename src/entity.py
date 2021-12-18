@@ -101,7 +101,11 @@ class Entity:
             return None
         return probe
 
-    
+    def commit_success(self):
+        self.success_increment()
+
+    def commit_fail(self):
+        self.fail_increment()
 
     def start_routine(self):
 
@@ -116,11 +120,13 @@ class Entity:
 
         data = self.send_probe_request()
         if not data:
-           return False
+            self.commit_fail()
+            return False
 
         probe = self.process_probe(data)
         if not probe:
-           return False
+            self.commit_fail()
+            return False
 
         valid = self.validate_response(probe)
 
@@ -134,8 +140,12 @@ class Entity:
         self.lastcheck = datetime.now()
         log(f'{self.name} valid: {valid}')
 
+        if not valid:
+            self.commit_fail()
+            return False
+
+        self.commit_success()
         return valid
 
     def __repr__(self):
         return 'Entity-obj-%s' % self.name
-
