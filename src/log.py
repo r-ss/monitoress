@@ -1,8 +1,19 @@
 import logging
-from config import config
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 
-logging.basicConfig(format='%(asctime)s %(message)s', datefmt=config.DATETIME_FORMAT_HUMAN, filename=config.LOG_PATH, encoding='utf-8', level=logging.INFO)
+from config import config
+
+rotating_file_handler = RotatingFileHandler(
+    filename=config.LOG_FILE_PATH, 
+    mode='a',
+    maxBytes=1*1024,
+    backupCount=1,
+    encoding='utf-8',
+    delay=0
+)
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s', datefmt=config.DATETIME_FORMAT_TECHNICAL, handlers=[rotating_file_handler])
 
 def log(message:str) -> None:
     logging.info(message)

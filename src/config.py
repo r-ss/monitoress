@@ -18,7 +18,7 @@ class config:
     APP_NAME = 'monitoress'
     
 
-    CHECKS_TICK_INTERVAL = 10
+    CHECKS_TICK_INTERVAL = 60
 
     # GENERAL SETTINGS AND HOSTS
     BASE_DIR: str = Path.cwd()
