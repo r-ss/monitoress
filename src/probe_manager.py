@@ -4,7 +4,7 @@ from config import config
 from entity import Entity
 from entity_bc import EntityBC
 
-from utils import send_message
+from utils import send_message, singleton
 
 from pydantic import BaseModel
 
@@ -20,15 +20,6 @@ class FoldWrapAPIBM(BaseModel):
     resource: str
     datetime: str
     uptime: str
-
-# Singleton - https://stackoverflow.com/questions/42237752/single-instance-of-class-in-python
-def singleton(cls, *args, **kw):
-    instances = {}
-    def _singleton():
-       if cls not in instances:
-            instances[cls] = cls(*args, **kw)
-       return instances[cls]
-    return _singleton
 
 @singleton
 class ProbeManager:

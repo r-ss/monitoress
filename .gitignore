@@ -29,5 +29,5 @@ task.txt
 # Secrets
 .env.secrets
 
+logs/
 *.log
-*.log*

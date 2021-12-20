@@ -1,22 +1,10 @@
-import logging
-from datetime import datetime
-from logging.handlers import RotatingFileHandler
-
+import sys
+from loguru import logger
 from config import config
 
-rotating_file_handler = RotatingFileHandler(
-    filename=config.LOG_FILE_PATH, 
-    mode='a',
-    maxBytes=1*1024,
-    backupCount=1,
-    encoding='utf-8',
-    delay=0
-)
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s', datefmt=config.DATETIME_FORMAT_TECHNICAL, handlers=[rotating_file_handler])
+logger.remove(0)
+logger.add(sys.stderr, format="<green>{time:YYYY-MM-DD at HH:mm:ss}</green> | <level>{message}</level>", colorize=True, backtrace=True, diagnose=True)
+logger.add(config.LOG_FILE_PATH, rotation='3 MB', retention="10 days", format="{time} {level} {message}")
 
 def log(message:str) -> None:
-    logging.info(message)
-    dtf = datetime.now().strftime(config.DATETIME_FORMAT_HUMAN)
-    s = f'{dtf} - {message}'
-    print(s)
+    logger.info(message)

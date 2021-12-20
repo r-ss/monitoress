@@ -1,6 +1,6 @@
 from datetime import datetime
-import os
-import platform
+# import os
+import json
 # import subprocess
 
 from fastapi import status
@@ -28,28 +28,28 @@ class ProbeBM(BaseModel):
 @cbv(router)
 class SendProbeCBV:
 
-    """ READ """
-    @router.get('/send_probe', summary='Send Probe')
-    def send_probe(self):
+    # """ READ """
+    # @router.get('/send_probe', summary='Send Probe')
+    # def send_probe(self):
 
 
-        e = Entity('foldwrap, digitalocean', '167.172.164.135', expected='fold')
+    #     e = Entity('foldwrap, digitalocean', '167.172.164.135', expected='fold')
 
-        r = requests.get(e.url)
-        probe = ProbeBM.parse_obj(r.json())
+    #     r = requests.get(e.url)
+    #     probe = ProbeBM.parse_obj(r.json())
 
-        print(probe)
+    #     print(probe)
   
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={
-                'client': config.APP_NAME,
-                'time_client': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
-                'resource': probe.resource,
-                'random': probe.random,
-                'uptime': probe.uptime
-            }
-        )
+    #     return JSONResponse(
+    #         status_code=status.HTTP_200_OK,
+    #         content={
+    #             'client': config.APP_NAME,
+    #             'time_client': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
+    #             'resource': probe.resource,
+    #             'random': probe.random,
+    #             'uptime': probe.uptime
+    #         }
+    #     )
 
     @router.get('/get_probe/{probe_id}', summary='Get Probe')
     def get_probe(self, probe_id: str):
@@ -69,5 +69,30 @@ class SendProbeCBV:
                 'status': ok,
                 'success_count': e.success_count,
                 'fail_count': e.fail_count
+            }
+        )
+
+    @router.get('/all', summary='Get All Probes')
+    def get_probe(self):
+
+        bin = []
+
+        for e in pm.entities:
+            ok = e.start_routine()
+            ratio = int(e.success_count) / (int(e.success_count) + int(e.fail_count))
+            bin.append({'name': e.name,
+                        'lastcheck': e.lastcheck_formatted,
+                        'status': ok,
+                        'success_count': e.success_count,
+                        'fail_count': e.fail_count,
+                        'success_ratio': round(ratio, 4),
+                        })
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={
+                'client': config.APP_NAME,
+                'time_client': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
+                'probes': bin,
             }
         )

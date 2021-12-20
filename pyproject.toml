@@ -13,6 +13,7 @@ pytest = "^6.2.5"
 requests = "^2.26.0"
 APScheduler = "^3.8.1"
 redis = "^4.0.2"
+loguru = "^0.5.3"
 
 [tool.poetry.dev-dependencies]
 
@@ -21,4 +22,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-start = "src.main:start"
+start = "python src/main.py"

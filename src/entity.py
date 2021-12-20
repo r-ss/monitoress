@@ -2,6 +2,7 @@ import requests
 from ress_redis import RessRedisAbstraction
 from datetime import datetime
 
+from config import config
 from log import log
 
 redis = RessRedisAbstraction()
@@ -25,6 +26,10 @@ class Entity:
         self.interval = interval
         self.lastcheck = None
         self.importand = important # immediately send alerts about error if True
+
+    @property
+    def lastcheck_formatted(self) -> str:
+        return self.lastcheck.strftime(config.DATETIME_FORMAT_HUMAN)
 
     """ success increment """
     @property
@@ -64,12 +69,24 @@ class Entity:
         return f'{self.name} - {comb}'
 
     def send_probe_request(self):
-        try:
-            r = requests.get(self.url)
-        except Exception as ex:
-            self.add_error(f'cannot probe {self.name}')
-            return None
         self.fired = True
+        try:
+            r = requests.get(self.url, timeout=10)
+            r.raise_for_status()
+            # print(r)
+        except requests.exceptions.HTTPError as err:
+            self.add_error(f'HTTPError with request {self.name}')
+            return None
+        except requests.exceptions.ConnectionError as err:
+            self.add_error(f'ConnectionError with request {self.name}')
+            return None
+        except requests.exceptions.ReadTimeout as err:
+            self.add_error(f'TimeoutError with request {self.name}')
+            return None
+        except requests.exceptions.RequestException as err:
+            self.add_error(f'Сannot probe {self.name}')
+            return None
+        
         return r
 
     def validate_response(self, probe) -> bool:
