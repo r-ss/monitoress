@@ -85,7 +85,7 @@ class SendProbeCBV:
             if e.fail_count:
                 f = int(e.fail_count)
 
-            ratio = s / s + f
+            ratio = s / (s + f)
             bin.append({'name': e.name,
                         'lastcheck': e.lastcheck_formatted,
                         'status': ok,
