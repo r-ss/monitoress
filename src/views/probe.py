@@ -78,7 +78,14 @@ class SendProbeCBV:
 
         for e in pm.entities:
             ok = e.start_routine()
-            ratio = int(e.success_count) / (int(e.success_count) + int(e.fail_count))
+
+            f, s = 0, 0
+            if e.success_count:
+                s = int(e.success_count)
+            if e.fail_count:
+                f = int(e.fail_count)
+
+            ratio = s / s + f
             bin.append({'name': e.name,
                         'lastcheck': e.lastcheck_formatted,
                         'status': ok,
