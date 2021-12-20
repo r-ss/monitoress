@@ -11,7 +11,6 @@ from fastapi_utils.inferring_router import InferringRouter
 from config import config
 
 from pydantic import BaseModel
-import requests
 
 from probe_manager import ProbeManager
 pm = ProbeManager()
@@ -51,7 +50,7 @@ class SendProbeCBV:
     #         }
     #     )
 
-    @router.get('/get_probe/{probe_id}', summary='Get Probe')
+    @router.get('/probe/{probe_id}', summary='Get Probe')
     def get_probe(self, probe_id: str):
 
         pid = int(probe_id)
@@ -73,7 +72,7 @@ class SendProbeCBV:
         )
 
     @router.get('/all', summary='Get All Probes')
-    def get_probe(self):
+    def get_all_probes(self):
 
         bin = []
 
