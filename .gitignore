@@ -31,3 +31,6 @@ task.txt
 
 logs/
 *.log
+
+# i don't want include poetry.lock into repository
+poetry.lock

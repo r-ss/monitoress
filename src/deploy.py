@@ -2,7 +2,7 @@ import subprocess
 from config import config
 
 from log import log
-from utils import send_message, bytes_to_human_readable_size
+from utils import bytes_to_human_readable_size
 
 
 RSYNC_CMD_BASE = 'rsync -az --progress --stats --delete'
@@ -34,11 +34,22 @@ def upload_sources():
     msg = f'uploaded, {bytes_to_human_readable_size(bandwith_counter)} for {files_counter} files'
 
     log(msg)
-    # send_message(msg)
 
+    if success:
+        restart_script_in_remote_tmux()
 
     
-    
+def restart_script_in_remote_tmux():
+    cmd = "ssh ress@fold -t 'tmux send-keys -t 1 C-C C-U \"poetry run python src/main.py\" Enter'"
+    success, output = run_command(cmd)
+
+    if not success:
+        log('restart remote tmux failed')
+        return
+
+
+
+
 
 def run_command(cmd: str) -> str:
     log(f'run command {cmd}')
@@ -53,3 +64,14 @@ def run_command(cmd: str) -> str:
 
 if __name__ == '__main__':
     upload_sources()
+
+
+
+"""
+
+ssh ress@fold -t 'tmux a -t 1 \; send-keys C-U ls Enter'
+
+ssh ress@fold -t 'tmux send-keys -t 1 C-C C-U "poetry run python src/main.py" Enter'
+
+
+"""

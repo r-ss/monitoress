@@ -131,6 +131,7 @@ class Entity:
 
     def commit_success(self):
         self.success_increment()
+        self.failed = False
         self.fail_notification_sended = False
 
     def commit_fail(self):
