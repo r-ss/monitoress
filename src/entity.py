@@ -14,24 +14,20 @@ redis = RessRedisAbstraction()
 class Entity:
 
     errors_verbose = []
-    schema = None
 
-    def __init__(self, name, host, port=8999, uri='probe', look_for='resource', expected='dev-macbook', https=False, schema = None, interval = 10, important = True) -> None:
+    def __init__(self, name, interval=10, important=False) -> None:   
+
         self.name = name
-        self.host = host
-        self.port = port
-        self.uri = uri
-        self.look_for = look_for
-        self.expected = expected
+        self.interval = interval
+        self.important = important # immediately send alerts about error if True
+        self.lastcheck = None
         self.fired = False
         self.fail_notification_sended = False
-        self.failed = False
-        self.https = https
-        self.schema = schema
-        self.interval = interval
-        self.lastcheck = None
-        self.important = important # immediately send alerts about error if True
-        
+        self.failed = False     
+        self.redis_fields = {
+            'success_count': f'{self.name}_success_count',
+            'fail_count': f'{self.name}_fail_count',
+        }
 
     @property
     def lastcheck_formatted(self) -> str:
@@ -42,29 +38,24 @@ class Entity:
     """ success increment """
     @property
     def success_count(self) -> str:
-        return redis.get(f'{self.name}_success_count')
+        return redis.get(self.redis_fields['success_count'])
 
     def success_increment(self):
-        return redis.incr(f'{self.name}_success_count')
+        return redis.incr(self.redis_fields['success_count'])
+
+    def success_reset(self):
+        return redis.set(self.redis_fields['success_count'], 0)
 
     """ fail increment """
     @property
     def fail_count(self) -> str:
-        return redis.get(f'{self.name}_fail_count')
+        return redis.get(self.redis_fields['fail_count'])
 
     def fail_increment(self):
-        return redis.incr(f'{self.name}_fail_count')
+        return redis.incr(self.redis_fields['fail_count'])
 
-    @property
-    def url(self) -> str:
-        protocol = 'http'
-        port = self.port
-
-        if self.https:
-            protocol = 'https'
-            port = 443
-
-        return f'{protocol}://{self.host}:{port}/{self.uri}'
+    def fail_reset(self):
+        return redis.set(self.redis_fields['fail_count'], 0)
 
     def add_error(self, error_description):
         log(error_description)
@@ -79,12 +70,21 @@ class Entity:
     def error_notification_text(self) -> str:
         return f"{emojize(':warning:')} {self.name}\n{self.errors}"
 
+    @property
+    def is_too_early(self):
+        if self.lastcheck:
+            delta = datetime.now(config.TZ) - self.lastcheck
+            delta_seconds = round(delta.total_seconds())
+            if delta_seconds < self.interval:
+                log(f'skip {self.name} because interval {self.interval} > {delta_seconds}')
+                return True 
+        return False
+
     def send_probe_request(self):
         self.fired = True
         try:
             r = requests.get(self.url, timeout=10)
             r.raise_for_status()
-            # print(r)
         except requests.exceptions.HTTPError as err:
             self.add_error(f'HTTPError with request {self.name}')
             return None
@@ -97,37 +97,7 @@ class Entity:
         except requests.exceptions.RequestException as err:
             self.add_error(f'Сannot probe {self.name}')
             return None
-        
         return r
-
-    def validate_response(self, probe) -> bool:
-        if not self.failed:
-            try:
-                if probe.resource == self.expected:
-                    return True
-            except Exception as ex:
-                self.add_error(f'cannot validate {self.name}')
-        self.add_error(f'invalid probe {self.name}')
-        return False
-
-
-    @property
-    def is_too_early(self):
-        if self.lastcheck:
-            delta = datetime.now() - self.lastcheck
-            delta_seconds = round(delta.total_seconds())
-            if delta_seconds < self.interval:
-                log(f'skip {self.name} because interval {self.interval} > {delta_seconds}')
-                return True 
-        return False
-    
-    def process_probe(self, data):
-        try:
-            probe = self.schema.parse_obj(data.json())
-        except Exception as ex:
-            self.add_error(f'cannot parse probe for {self.name}')
-            return None
-        return probe
 
     def commit_success(self):
         self.success_increment()
@@ -147,11 +117,6 @@ class Entity:
         if self.is_too_early:
             return True
 
-        # # skip if previous probe already failed
-        # if self.failed:
-        #     log(f'skip already failed probe for {self.name}')
-        #     return
-
         data = self.send_probe_request()
         if not data:
             self.commit_fail()
@@ -164,14 +129,7 @@ class Entity:
 
         valid = self.validate_response(probe)
 
-        # if not self.failed and not valid:
-        #             self.add_error(f'invalid probe {self.name}')
-        
-
-        # if self.failed:
-        #     return False
-
-        self.lastcheck = datetime.now()
+        self.lastcheck = datetime.now(config.TZ)
         log(f'{self.name} valid: {valid}')
 
         if not valid:

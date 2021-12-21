@@ -25,6 +25,9 @@ class RessRedisAbstraction:
         self.r.delete(k)
         return True
 
+    def ping(self):
+        return self.r.ping() 
+
 
 """
 

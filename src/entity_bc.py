@@ -1,3 +1,4 @@
+import os
 from typing import List
 from pydantic import BaseModel
 
@@ -19,24 +20,13 @@ class ValidatorsBM(BaseModel):
 
 class EntityBC(Entity):
 
-    urlbase = 'https://beaconcha.in/api/v1/validator/'
-    errors_verbose = []
-    schema = None
-    indexes_string = ''
+    # url = f"https://beaconcha.in/api/v1/validator/{os.environ.get('VALIDATORS')}"
 
-    def __init__(self, name, indexes_string, interval = 10, important = False) -> None:
-        self.name = name
-        self.indexes_string = indexes_string
-        self.fired = False
-        self.failed = False
-        self.interval = interval
-        self.lastcheck = None
-        self.important = important
+    def __init__(self, name, interval=10, important=False) -> None:
+        super().__init__(name, interval, important)
 
-    @property
-    def url(self) -> str:
-        return f'{self.urlbase}{self.indexes_string}'
-   
+        self.url = f"https://beaconcha.in/api/v1/validator/{os.environ.get('VALIDATORS')}"
+
 
     def process_probe(self, data):
         try:
@@ -61,3 +51,6 @@ class EntityBC(Entity):
                 self.add_error(f'cannot validate {self.name}')
         self.add_error(f'one or more status in not online for {self.name}')
         return False
+
+    def __repr__(self):
+        return 'EntityBC-obj-%s' % self.name

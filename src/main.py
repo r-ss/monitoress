@@ -27,14 +27,10 @@ pm = ProbeManager()
 
 
 def timer_tick():
-    # print('timer tick')
     pm.check_all()
 
-# sched = BlockingScheduler(timezone=config.TIMEZONE_STRING)
-sched = BackgroundScheduler(timezone=config.TIMEZONE_STRING)
-sched.add_job(timer_tick, 'interval', seconds = config.CHECKS_TICK_INTERVAL)
-
-
+scheduler = BackgroundScheduler(timezone=config.TZ)
+scheduler.add_job(timer_tick, 'interval', seconds=config.CHECKS_TICK_INTERVAL)
 
 app = FastAPI()
 # testclient = TestClient(app)
@@ -43,24 +39,15 @@ app = FastAPI()
 def read_root():
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no root url")
 
-
 # including routes from our views
 for r in routers:
     app.include_router(r)
 
 
 def start_uvicorn_server():
-    
-    """Launched with `poetry run start` at root level"""
-    uvicorn.run('main:app', host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir='src')
-
-
-
-
+    uvicorn.run('main:app', host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir=config.ENTRYPOINT.parent)
 
 
 if __name__ == '__main__':
-    # rt = RepeatedTimer(2, timer_tick) # it auto-starts, no need of rt.start()
-    # pm.check_all()
-    sched.start()    
+    scheduler.start()    
     start_uvicorn_server()

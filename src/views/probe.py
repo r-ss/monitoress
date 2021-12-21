@@ -63,7 +63,7 @@ class SendProbeCBV:
             status_code=status.HTTP_200_OK,
             content={
                 'client': config.APP_NAME,
-                'time_client': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
+                'time_client': datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
                 'entity_name': e.name,
                 'status': ok,
                 'success_count': e.success_count,
@@ -85,7 +85,10 @@ class SendProbeCBV:
             if e.fail_count:
                 f = int(e.fail_count)
 
-            ratio = s / (s + f)
+            ratio = 0.0
+            if f+s > 0:
+                ratio = s / (s + f)
+            
             bin.append({'name': e.name,
                         'lastcheck': e.lastcheck_formatted,
                         'status': ok,
@@ -98,7 +101,22 @@ class SendProbeCBV:
             status_code=status.HTTP_200_OK,
             content={
                 'client': config.APP_NAME,
-                'time_client': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
+                'time_client': datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
                 'probes': bin,
+            }
+        )
+
+    @router.get('/reset_stats', summary='Reset success/fail counters')
+    def reset_stats(self):
+
+        for e in pm.entities:            
+            e.success_reset()
+            e.fail_reset()
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={
+                'resource': 'reset_stats',
+                'result': 'ok'
             }
         )

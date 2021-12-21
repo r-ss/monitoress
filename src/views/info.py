@@ -10,8 +10,11 @@ from fastapi_utils.inferring_router import InferringRouter
 
 from config import config
 
+from ress_redis import RessRedisAbstraction
+
 router = InferringRouter(tags=['General'])
 
+redis = RessRedisAbstraction()
 
 @cbv(router)
 class InfoCBV:
@@ -36,19 +39,19 @@ class InfoCBV:
         except:
             git_revision_hash = 'error'
 
-
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
                 'resource': config.APP_NAME,
                 'git_revision_hash': git_revision_hash,
-                'datetime': datetime.now().strftime(config.DATETIME_FORMAT_HUMAN),
+                'datetime': datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
                 'os': os.name,
                 'platform': platform.system(),
                 'platform_release': platform.release(),
                 'python version': platform.python_version(),
                 'testing': config.TESTING_MODE,
                 'production': config.PRODUCTION,
-                'load averages': f'{load1:.2f} {load5:.2f} {load15:.2f}'
+                'load averages': f'{load1:.2f} {load5:.2f} {load15:.2f}',
+                'redis_available': redis.ping()
             }
         )
