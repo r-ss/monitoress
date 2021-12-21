@@ -52,7 +52,7 @@ for r in routers:
 def start_uvicorn_server():
     
     """Launched with `poetry run start` at root level"""
-    uvicorn.run('main:app', host=config.HOST, port=config.PORT, reload=True, app_dir='src')
+    uvicorn.run('main:app', host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir='src')
 
 
 

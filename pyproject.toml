@@ -14,6 +14,7 @@ requests = "^2.26.0"
 APScheduler = "^3.8.1"
 redis = "^4.0.2"
 loguru = "^0.5.3"
+emoji = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
 

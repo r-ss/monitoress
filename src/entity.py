@@ -6,6 +6,8 @@ from config import config
 from log import log
 from utils import send_message
 
+from emoji import emojize
+
 
 redis = RessRedisAbstraction()
 
@@ -22,15 +24,19 @@ class Entity:
         self.look_for = look_for
         self.expected = expected
         self.fired = False
+        self.fail_notification_sended = False
         self.failed = False
         self.https = https
         self.schema = schema
         self.interval = interval
         self.lastcheck = None
-        self.importand = important # immediately send alerts about error if True
+        self.important = important # immediately send alerts about error if True
+        
 
     @property
     def lastcheck_formatted(self) -> str:
+        if not self.lastcheck:
+            return ''
         return self.lastcheck.strftime(config.DATETIME_FORMAT_HUMAN)
 
     """ success increment """
@@ -67,8 +73,11 @@ class Entity:
     
     @property
     def errors(self) -> str:
-        comb = '\n'.join(self.errors_verbose)
-        return f'{self.name} - {comb}'
+        return '\n'.join(self.errors_verbose)
+
+    @property
+    def error_notification_text(self) -> str:
+        return f"{emojize(':warning:')} {self.name}\n{self.errors}"
 
     def send_probe_request(self):
         self.fired = True
@@ -122,12 +131,14 @@ class Entity:
 
     def commit_success(self):
         self.success_increment()
+        self.fail_notification_sended = False
 
     def commit_fail(self):
         self.fail_increment()
-        log(f'error happened with {e.name}')
-        if self.important and config.TELEGRAM_ENABLED:
-            send_message(e.errors)
+        log(f'error happened with {self.name}')
+        if self.important and not self.fail_notification_sended:
+            send_message(self.error_notification_text)
+            self.fail_notification_sended = True
 
     def start_routine(self):
 

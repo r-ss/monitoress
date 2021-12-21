@@ -32,12 +32,13 @@ class config:
 
     VALIDATORS = str(os.environ.get('VALIDATORS'))
 
-    CHECKS_TICK_INTERVAL = 3
+    CHECKS_TICK_INTERVAL = 10
     if PRODUCTION:
         CHECKS_TICK_INTERVAL = 60
 
     HOST = '0.0.0.0'
     PORT = 9004
+    SERVER_WATCH_FILES = not PRODUCTION  # auto reload on source files change
 
     LOG_FILE_PATH = f'{Path.cwd()}/logs/log.log'
 
