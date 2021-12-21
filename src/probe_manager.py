@@ -4,7 +4,7 @@ from config import config
 from entity import Entity
 from entity_bc import EntityBC
 
-from utils import send_message, singleton
+from utils import singleton
 
 from pydantic import BaseModel
 
@@ -54,11 +54,6 @@ class ProbeManager:
         for index, e in enumerate(self.entities):
 
             ok = e.start_routine()
-            if not ok:
-                log(f'error happened with {e.name}')
-                if e.important and config.TELEGRAM_ENABLED:
-                    send_message(e.errors)
-                return
 
 
             # log(f'{e.name} ok')

@@ -1,9 +1,4 @@
-import requests
-from datetime import datetime
-
-from log import log
-
-from typing import Optional, List
+from typing import List
 from pydantic import BaseModel
 
 from entity import Entity

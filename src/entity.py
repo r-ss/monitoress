@@ -4,6 +4,8 @@ from datetime import datetime
 
 from config import config
 from log import log
+from utils import send_message
+
 
 redis = RessRedisAbstraction()
 
@@ -12,7 +14,7 @@ class Entity:
     errors_verbose = []
     schema = None
 
-    def __init__(self, name, host, port=8999, uri='probe', look_for='resource', expected='dev-macbook', https=False, schema = None, interval = 10, important = False) -> None:
+    def __init__(self, name, host, port=8999, uri='probe', look_for='resource', expected='dev-macbook', https=False, schema = None, interval = 10, important = True) -> None:
         self.name = name
         self.host = host
         self.port = port
@@ -123,6 +125,9 @@ class Entity:
 
     def commit_fail(self):
         self.fail_increment()
+        log(f'error happened with {e.name}')
+        if self.important and config.TELEGRAM_ENABLED:
+            send_message(e.errors)
 
     def start_routine(self):
 
