@@ -44,7 +44,7 @@ class config:
 
     TURBO = False  # make probes on every tick, ignoring probe interval settings
     if TURBO:
-        CHECKS_TICK_INTERVAL = 5
+        CHECKS_TICK_INTERVAL = 7
         # TELEGRAM_ENABLED = False
         DEBUG = True
 

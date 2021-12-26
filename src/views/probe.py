@@ -67,7 +67,7 @@ class SendProbeCBV:
                 "client": config.APP_NAME,
                 "time_client": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
                 "entity_name": e.name,
-                "status": ok,
+                "status": e.status,
                 "success_count": e.success_count,
                 "fail_count": e.fail_count,
             },
@@ -79,7 +79,11 @@ class SendProbeCBV:
         bin = []
 
         for e in pm.entities:
-            ok = e.start_routine()
+
+            # if not pm.is_dependencies_ok(e):
+            #     e.status = 'skip'
+
+            # ok = e.start_routine()
 
             f, s = 0, 0
             if e.success_count:
@@ -91,15 +95,12 @@ class SendProbeCBV:
             if f + s > 0:
                 ratio = s / (s + f)
 
+            dependencies = None
+            if e.depends_on:
+                dependencies = e.depends_on
+
             bin.append(
-                {
-                    "name": e.name,
-                    "lastcheck": e.lastcheck_formatted,
-                    "status": ok,
-                    "success_count": e.success_count,
-                    "fail_count": e.fail_count,
-                    "success_ratio": round(ratio, 4),
-                }
+                {"name": e.name, "lastcheck": e.lastcheck_formatted, "status": e.status, "success_count": e.success_count, "fail_count": e.fail_count, "success_ratio": round(ratio, 4), "dependencies": dependencies}
             )
 
         return JSONResponse(

@@ -55,6 +55,7 @@ def start_uvicorn_server():
         reload=config.SERVER_WATCH_FILES,
         app_dir=config.ENTRYPOINT.parent,
     )
+    pm.check_all()
 
 
 if __name__ == "__main__":

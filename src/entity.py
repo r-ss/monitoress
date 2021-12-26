@@ -13,7 +13,7 @@ redis = RessRedisAbstraction()
 
 
 class Entity:
-    def __init__(self, name, interval=10, important=False) -> None:
+    def __init__(self, name, interval=10, important=True) -> None:
 
         self.name = name
         self.interval = interval
@@ -27,7 +27,8 @@ class Entity:
             "fail_count": f"{self.name}_fail_count",
         }
         self.errors_verbose = []
-        self.depends_on = None
+        self.depends_on = []
+        self.status = "unknown"
 
     @property
     def lastcheck_formatted(self) -> str:
@@ -110,11 +111,13 @@ class Entity:
             msg = f"{emojize(':shamrock:')} {self.name} back to normal"
             send_message(msg)
         self.failed = False
+        self.status = "ok"
         self.fail_notification_sended = False
 
     def commit_fail(self):
         self.failed = True
         self.fail_increment()
+        self.status = "error"
         log(f"error happened with {self.name}")
         if self.important and not self.fail_notification_sended:
             send_message(self.error_notification_text)
@@ -123,8 +126,12 @@ class Entity:
     def start_routine(self):
 
         # skip if interval not reached
+
+        # skip if interval not reached
         if self.is_too_early:
             return True
+
+        self.lastcheck = datetime.now(config.TZ)
 
         data = self.send_probe_request()
         if not data:
@@ -138,7 +145,6 @@ class Entity:
 
         valid = self.validate_response(probe)
 
-        self.lastcheck = datetime.now(config.TZ)
         log(f"{self.name} valid: {valid}")
 
         if not valid:
