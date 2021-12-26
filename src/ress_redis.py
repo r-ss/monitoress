@@ -1,14 +1,14 @@
 import redis
 
-class RessRedisAbstraction:
 
-    def __init__(self, host='localhost', port=6379, db=2):
+class RessRedisAbstraction:
+    def __init__(self, host="localhost", port=6379, db=2):
         self.r = redis.Redis(host=host, port=port, db=db)
 
     def get(self, k):
         v = self.r.get(k)
         if v:
-            if v.decode() == 'None':
+            if v.decode() == "None":
                 return None
             return v.decode()
         return None
@@ -26,7 +26,7 @@ class RessRedisAbstraction:
         return True
 
     def ping(self):
-        return self.r.ping() 
+        return self.r.ping()
 
 
 """
@@ -38,7 +38,7 @@ https://betterprogramming.pub/getting-started-with-redis-a-python-tutorial-3a185
 
 
 docker pull redis
-docker run -d -p 6379:6379 --name redis-server redis
+docker run -d -p 6379:6379 -v /home/ress/redis_data:/data --name redis-server redis
 
 docker exec -it redis-server redis-cli
 

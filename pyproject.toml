@@ -9,7 +9,6 @@ python = "^3.10"
 fastapi = "^0.70.0"
 uvicorn = {extras = ["standard"], version = "^0.16.0"}
 fastapi-utils = "^0.2.1"
-pytest = "^6.2.5"
 requests = "^2.26.0"
 APScheduler = "^3.8.1"
 redis = "^4.0.2"
@@ -17,6 +16,8 @@ loguru = "^0.5.3"
 emoji = "^1.6.1"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+black = "^21.12b0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

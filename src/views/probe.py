@@ -1,6 +1,8 @@
 from datetime import datetime
+
 # import os
 import json
+
 # import subprocess
 
 from fastapi import status
@@ -13,16 +15,17 @@ from config import config
 from pydantic import BaseModel
 
 from probe_manager import ProbeManager
+
 pm = ProbeManager()
 
-router = InferringRouter(tags=['General'])
-
+router = InferringRouter(tags=["General"])
 
 
 class ProbeBM(BaseModel):
     resource: str
     random: str
     uptime: int
+
 
 @cbv(router)
 class SendProbeCBV:
@@ -31,14 +34,13 @@ class SendProbeCBV:
     # @router.get('/send_probe', summary='Send Probe')
     # def send_probe(self):
 
-
     #     e = Entity('foldwrap, digitalocean', '167.172.164.135', expected='fold')
 
     #     r = requests.get(e.url)
     #     probe = ProbeBM.parse_obj(r.json())
 
     #     print(probe)
-  
+
     #     return JSONResponse(
     #         status_code=status.HTTP_200_OK,
     #         content={
@@ -50,7 +52,7 @@ class SendProbeCBV:
     #         }
     #     )
 
-    @router.get('/probe/{probe_id}', summary='Get Probe')
+    @router.get("/probe/{probe_id}", summary="Get Probe")
     def get_probe(self, probe_id: str):
 
         pid = int(probe_id)
@@ -62,16 +64,16 @@ class SendProbeCBV:
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                'client': config.APP_NAME,
-                'time_client': datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
-                'entity_name': e.name,
-                'status': ok,
-                'success_count': e.success_count,
-                'fail_count': e.fail_count
-            }
+                "client": config.APP_NAME,
+                "time_client": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
+                "entity_name": e.name,
+                "status": ok,
+                "success_count": e.success_count,
+                "fail_count": e.fail_count,
+            },
         )
 
-    @router.get('/all', summary='Get All Probes')
+    @router.get("/all", summary="Get All Probes")
     def get_all_probes(self):
 
         bin = []
@@ -86,37 +88,37 @@ class SendProbeCBV:
                 f = int(e.fail_count)
 
             ratio = 0.0
-            if f+s > 0:
+            if f + s > 0:
                 ratio = s / (s + f)
-            
-            bin.append({'name': e.name,
-                        'lastcheck': e.lastcheck_formatted,
-                        'status': ok,
-                        'success_count': e.success_count,
-                        'fail_count': e.fail_count,
-                        'success_ratio': round(ratio, 4),
-                        })
+
+            bin.append(
+                {
+                    "name": e.name,
+                    "lastcheck": e.lastcheck_formatted,
+                    "status": ok,
+                    "success_count": e.success_count,
+                    "fail_count": e.fail_count,
+                    "success_ratio": round(ratio, 4),
+                }
+            )
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                'client': config.APP_NAME,
-                'time_client': datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
-                'probes': bin,
-            }
+                "client": config.APP_NAME,
+                "time_client": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
+                "probes": bin,
+            },
         )
 
-    @router.get('/reset_stats', summary='Reset success/fail counters')
+    @router.get("/reset_stats", summary="Reset success/fail counters")
     def reset_stats(self):
 
-        for e in pm.entities:            
+        for e in pm.entities:
             e.success_reset()
             e.fail_reset()
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={
-                'resource': 'reset_stats',
-                'result': 'ok'
-            }
+            content={"resource": "reset_stats", "result": "ok"},
         )
