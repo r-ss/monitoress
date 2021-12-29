@@ -44,15 +44,15 @@ class EntityBC(Entity):
         return validators
 
     def validate_response(self, validators) -> bool:
+        try:
+            if all(v.status == "active_online" for v in validators):
+                return True
+            else:
+                self.add_error(f"one or more status in not online for {self.name}")
+        except Exception as ex:
+            self.add_error(f"cannot validate {self.name}")
 
-        if not self.failed:
-            try:
-                if all(v.status == "active_online" for v in validators):
-                    return True
-                # return True
-            except Exception as ex:
-                self.add_error(f"cannot validate {self.name}")
-        self.add_error(f"one or more status in not online for {self.name}")
+        self.add_error(f"error with {self.name}")
         return False
 
     def __repr__(self):
