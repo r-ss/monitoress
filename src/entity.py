@@ -13,6 +13,9 @@ redis = RessRedisAbstraction()
 
 
 class Entity:
+
+    type = 'general'
+
     def __init__(self, name, interval=10, important=True) -> None:
 
         self.name = name
@@ -81,7 +84,6 @@ class Entity:
             delta = datetime.now(config.TZ) - self.lastcheck
             delta_seconds = round(delta.total_seconds())
             if delta_seconds < self.interval:
-                log(f"skip {self.name} because interval {self.interval} > {delta_seconds}")
                 return True
         return False
 
@@ -107,12 +109,12 @@ class Entity:
 
     def commit_success(self):
         self.success_increment()
-        if self.failed:
+        if self.failed and self.fail_notification_sended:
             msg = f"{emojize(':shamrock:')} {self.name} back to normal"
             send_message(msg)
+            self.fail_notification_sended = False
         self.failed = False
         self.status = "ok"
-        self.fail_notification_sended = False
 
     def commit_fail(self):
         self.failed = True
@@ -123,12 +125,13 @@ class Entity:
             send_message(self.error_notification_text)
             self.fail_notification_sended = True
 
-    def start_routine(self):
+    def start_routine(self, force=False):
 
         # skip if interval not reached
 
         # skip if interval not reached
-        if self.is_too_early:
+        if self.is_too_early and not force:
+            log(f"skip {self.name} because interval not reached")
             return True
 
         self.lastcheck = datetime.now(config.TZ)
@@ -153,6 +156,16 @@ class Entity:
 
         self.commit_success()
         return valid
+
+    @property
+    def nomnoml_block(self):
+        """ returns string in momnoml syntax for represent block on web """
+        """ [<green> grani_microtic5  |   status: ok, 14:35  |  last fail: 27.12.2021, 14:05] """
+
+        color = '<green>'
+        if self.failed:
+            color = '<red>'
+        return f'[{color} {self.name}  |  type: {self.type}  |  status: {self.status}  |  last check: {self.lastcheck_formatted}]\n'
 
     def __repr__(self):
         return "Entity-obj-%s" % self.name

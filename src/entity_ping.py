@@ -12,7 +12,7 @@ import subprocess  # For executing a shell command
 
 class EntityPing(Entity):
 
-    schema = None
+    type = 'ping'
 
     def __init__(self, name, interval=10, important=False, host=None) -> None:
         super().__init__(name, interval, important)

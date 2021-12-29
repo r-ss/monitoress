@@ -52,7 +52,7 @@ class SendProbeCBV:
     #         }
     #     )
 
-    @router.get("/probe/{probe_id}", summary="Get Probe")
+    @router.get("/api/probe/{probe_id}", summary="Get Probe")
     def get_probe(self, probe_id: str):
 
         pid = int(probe_id)
@@ -73,53 +73,28 @@ class SendProbeCBV:
             },
         )
 
-    @router.get("/all", summary="Get All Probes")
+    @router.get("/api/all", summary="Get All Probes")
     def get_all_probes(self):
 
-        bin = []
-
-        for e in pm.entities:
-
-            # if not pm.is_dependencies_ok(e):
-            #     e.status = 'skip'
-
-            # ok = e.start_routine()
-
-            f, s = 0, 0
-            if e.success_count:
-                s = int(e.success_count)
-            if e.fail_count:
-                f = int(e.fail_count)
-
-            ratio = 0.0
-            if f + s > 0:
-                ratio = s / (s + f)
-
-            dependencies = None
-            if e.depends_on:
-                dependencies = e.depends_on
-
-            bin.append(
-                {"name": e.name, "lastcheck": e.lastcheck_formatted, "status": e.status, "success_count": e.success_count, "fail_count": e.fail_count, "success_ratio": round(ratio, 4), "dependencies": dependencies}
-            )
+        probes = pm.check_all(force=True)
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
                 "client": config.APP_NAME,
                 "time_client": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
-                "probes": bin,
+                "probes": probes,
             },
         )
 
-    @router.get("/reset_stats", summary="Reset success/fail counters")
-    def reset_stats(self):
+    # @router.get("/reset_stats", summary="Reset success/fail counters")
+    # def reset_stats(self):
 
-        for e in pm.entities:
-            e.success_reset()
-            e.fail_reset()
+    #     for e in pm.entities:
+    #         e.success_reset()
+    #         e.fail_reset()
 
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content={"resource": "reset_stats", "result": "ok"},
-        )
+    #     return JSONResponse(
+    #         status_code=status.HTTP_200_OK,
+    #         content={"resource": "reset_stats", "result": "ok"},
+    #     )

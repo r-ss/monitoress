@@ -75,24 +75,56 @@ class ProbeManager:
                             return False
         return True
 
-    def check_all(self) -> None:
+    # def check_all(self) -> None:
 
-        log("- - - - - - - - -")
+    #     log("- - - - - - - - -")
 
-        if self.paused:
-            log("paused")
-            return
+    #     if self.paused:
+    #         log("paused")
+    #         return
 
-        for index, e in enumerate(self.entities):
+    #     for index, e in enumerate(self.entities):
 
-            # e.name = e.name + 'z'
+    #         # e.name = e.name + 'z'
+
+    #         if not self.is_dependencies_ok(e):
+    #             # ae = self.entities[index]
+    #             e.status = "skip"
+    #             log(f"skip {e.name} because dependencies is not ok")
+    #             continue
+
+    #         ok = e.start_routine()
+
+    #         # log(f'{e.name} ok')
+
+    def check_all(self, force=False):
+
+        bin = []
+        for e in self.entities:
+
+            f, s = 0, 0
+            if e.success_count:
+                s = int(e.success_count)
+            if e.fail_count:
+                f = int(e.fail_count)
+
+            ratio = 0.0
+            if f + s > 0:
+                ratio = s / (s + f)
+
+            dependencies = None
+            if e.depends_on:
+                dependencies = e.depends_on
 
             if not self.is_dependencies_ok(e):
-                # ae = self.entities[index]
                 e.status = "skip"
                 log(f"skip {e.name} because dependencies is not ok")
                 continue
 
-            ok = e.start_routine()
+            e.start_routine(force=force)
 
-            # log(f'{e.name} ok')
+            bin.append(
+                {"name": e.name, "type": e.type, "interval": e.interval, "lastcheck": e.lastcheck_formatted, "status": e.status, "success_count": e.success_count, "fail_count": e.fail_count, "success_ratio": round(ratio, 4), "dependencies": dependencies}
+            )
+
+        return bin

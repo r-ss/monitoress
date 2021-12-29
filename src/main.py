@@ -3,6 +3,7 @@ import uvicorn
 # from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 
 # from fastapi.testclient import TestClient
 
@@ -36,6 +37,14 @@ scheduler.add_job(timer_tick, "interval", seconds=config.CHECKS_TICK_INTERVAL)
 app = FastAPI()
 # testclient = TestClient(app)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.get("/", tags=["General"])
 def read_root():
@@ -53,7 +62,7 @@ def start_uvicorn_server():
         host=config.HOST,
         port=config.PORT,
         reload=config.SERVER_WATCH_FILES,
-        app_dir=config.ENTRYPOINT.parent,
+        app_dir=config.ENTRYPOINT.parent
     )
     pm.check_all()
 

@@ -22,6 +22,8 @@ class ValidatorsBM(BaseModel):
 
 class EntityBC(Entity):
 
+    type = 'beaconcha'
+
     # url = f"https://beaconcha.in/api/v1/validator/{os.environ.get('VALIDATORS')}"
 
     def __init__(self, name, interval=10, important=False) -> None:
@@ -47,7 +49,7 @@ class EntityBC(Entity):
             try:
                 if all(v.status == "active_online" for v in validators):
                     return True
-                return True
+                # return True
             except Exception as ex:
                 self.add_error(f"cannot validate {self.name}")
         self.add_error(f"one or more status in not online for {self.name}")

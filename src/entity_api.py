@@ -10,8 +10,7 @@ from utils import send_message
 
 class EntityAPI(Entity):
 
-    # errors_verbose = []
-    schema = None
+    type = 'api'
 
     def __init__(
         self,
