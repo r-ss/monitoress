@@ -37,6 +37,12 @@ class TinkerboardBM(BaseModel):
     server: str
 
 
+class AKNotesBM(BaseModel):
+    resource: str
+    git_revision_hash: str
+    datetime: str
+
+
 @singleton
 class ProbeManager:
 
@@ -56,6 +62,8 @@ class ProbeManager:
         self.add_entity(ress_backup_manager)
 
         self.add_entity(EntityAPI("eland_tinkerboard", interval=5 * 60, url="http://eland.ress.ws:8999/", look_for="resource", expected="tinkerboard", schema=TinkerboardBM))
+
+        self.add_entity(EntityAPI("ak_notes", interval=15 * 60, url="https://aknotes.ress.ws/info", look_for="resource", expected="ak_notes, info, CI/CD", schema=AKNotesBM))
 
         pass
 
