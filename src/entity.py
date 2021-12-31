@@ -32,6 +32,7 @@ class Entity:
         self.errors_verbose = []
         self.depends_on = []
         self.status = "unknown"
+        self.extra = {}
 
     @property
     def lastcheck_formatted(self) -> str:

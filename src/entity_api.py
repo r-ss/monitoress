@@ -21,6 +21,7 @@ class EntityAPI(Entity):
         look_for="status",
         expected="ok",
         schema=None,
+        extrafields=[]
     ) -> None:
         super().__init__(name, interval, important)
 
@@ -28,6 +29,7 @@ class EntityAPI(Entity):
         self.expected = expected
         self.schema = schema
         self.url = url
+        self.extrafields = extrafields
 
     def validate_response(self, probe) -> bool:
         try:
@@ -39,11 +41,18 @@ class EntityAPI(Entity):
         return False
 
     def process_probe(self, data):
-        try:
-            probe = self.schema.parse_obj(data.json())
-        except Exception as ex:
-            self.add_error(f"cannot parse probe for {self.name}")
-            return None
+        # try:
+        probe = self.schema.parse_obj(data.json())
+
+        for item in self.extrafields:
+            self.extra[item] = dict(probe)[item]
+            # pass
+
+        log(self)
+
+        # except Exception as ex:
+        #     self.add_error(f"cannot parse probe for {self.name}")
+        #     return None
         return probe
 
     def __repr__(self):

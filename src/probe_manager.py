@@ -1,7 +1,8 @@
 # import os
 # from config import config
+from datetime import datetime
 
-from typing import List, Union
+from typing import List, Optional, Union
 
 from entity_api import EntityAPI
 from entity_bc import EntityBC
@@ -42,6 +43,14 @@ class AKNotesBM(BaseModel):
     git_revision_hash: str
     datetime: str
 
+class SeleniumBM(BaseModel):
+    resource: str
+    git_revision_hash: str
+    datetime: str
+    redis_available: bool
+    last_routine_complete_at: Optional[str]
+    metart_last_count: Optional[int]
+
 
 @singleton
 class ProbeManager:
@@ -59,11 +68,14 @@ class ProbeManager:
 
         ress_backup_manager = EntityAPI("ress_backup_manager", interval=5 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         ress_backup_manager.depends_on = ["grani_microtic"]
+        ress_backup_manager.extrafields = ["latest_full_backup_time"]
         self.add_entity(ress_backup_manager)
 
         self.add_entity(EntityAPI("eland_tinkerboard", interval=5 * 60, url="http://eland.ress.ws:8999/", look_for="resource", expected="tinkerboard", schema=TinkerboardBM))
 
         self.add_entity(EntityAPI("ak_notes", interval=15 * 60, url="https://aknotes.ress.ws/info", look_for="resource", expected="ak_notes, info, CI/CD", schema=AKNotesBM))
+
+        self.add_entity(EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=['last_routine_complete_at', 'metart_last_count']))
 
         pass
 
@@ -131,8 +143,17 @@ class ProbeManager:
 
             e.start_routine(force=force)
 
-            bin.append(
-                {"name": e.name, "type": e.type, "interval": e.interval, "lastcheck": e.lastcheck_formatted, "status": e.status, "success_count": e.success_count, "fail_count": e.fail_count, "success_ratio": round(ratio, 4), "dependencies": dependencies}
+            bin.append({
+                "name": e.name,
+                "type": e.type,
+                "interval": e.interval,
+                "lastcheck": e.lastcheck_formatted,
+                "status": e.status,
+                "success_count": e.success_count,
+                "fail_count": e.fail_count,
+                "success_ratio": round(ratio, 4),
+                "dependencies": dependencies,
+                "extra": e.extra}
             )
 
         return bin
