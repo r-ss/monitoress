@@ -118,6 +118,7 @@ class Entity:
         self.status = "ok"
 
     def commit_fail(self):
+        #log('commit fail')
         self.failed = True
         self.fail_increment()
         self.status = "error"

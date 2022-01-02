@@ -16,6 +16,7 @@ def send_message(message):
         config.NOTIFICATIONS_URL,
         urlencode({"message": message, "silent": False}).encode(),
     )
+    #print(f'sending message{message}')
     response_json = urlopen(request).read().decode()
     return f'sended message "{message}"'
 

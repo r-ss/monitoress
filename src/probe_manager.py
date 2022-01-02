@@ -1,6 +1,6 @@
 # import os
 # from config import config
-from datetime import datetime
+# from datetime import datetime
 
 from typing import List, Optional, Union
 
@@ -30,7 +30,7 @@ class FoldWrapAPIBM(BaseModel):
 class RessBackupManagerBM(BaseModel):
     resource: str
     datetime: str
-    latest_full_backup_time: str
+    last_run: str
 
 
 class TinkerboardBM(BaseModel):
@@ -48,8 +48,8 @@ class SeleniumBM(BaseModel):
     git_revision_hash: str
     datetime: str
     redis_available: bool
-    last_routine_complete_at: Optional[str]
-    metart_last_count: Optional[int]
+    last_run: Optional[str]
+    last_count: Optional[int]
 
 
 @singleton
@@ -68,14 +68,14 @@ class ProbeManager:
 
         ress_backup_manager = EntityAPI("ress_backup_manager", interval=5 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         ress_backup_manager.depends_on = ["grani_microtic"]
-        ress_backup_manager.extrafields = ["latest_full_backup_time"]
+        ress_backup_manager.extrafields = ["last_run"]
         self.add_entity(ress_backup_manager)
 
         self.add_entity(EntityAPI("eland_tinkerboard", interval=5 * 60, url="http://eland.ress.ws:8999/", look_for="resource", expected="tinkerboard", schema=TinkerboardBM))
 
         self.add_entity(EntityAPI("ak_notes", interval=15 * 60, url="https://aknotes.ress.ws/info", look_for="resource", expected="ak_notes, info, CI/CD", schema=AKNotesBM))
 
-        self.add_entity(EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=['last_routine_complete_at', 'metart_last_count']))
+        self.add_entity(EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=['last_run', 'last_count']))
 
         pass
 

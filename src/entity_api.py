@@ -16,7 +16,7 @@ class EntityAPI(Entity):
         self,
         name,
         interval=10,
-        important=False,
+        important=True,
         url=None,
         look_for="status",
         expected="ok",
