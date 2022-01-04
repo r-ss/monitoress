@@ -33,6 +33,7 @@ class config:
 
     # logging setup, more in log.py
     LOG_FILE_PATH = f"{Path.cwd()}/logs/log.log"
+    LOG_LEVEL = "DEBUG"
 
     # notifications
     TELEGRAM_ENABLED = PRODUCTION  # Not send actual telegram messages if False
@@ -44,8 +45,8 @@ class config:
 
     TURBO = False  # make probes on every tick, ignoring probe interval settings
     if TURBO:
-        CHECKS_TICK_INTERVAL = 10
-        # TELEGRAM_ENABLED = False
+        CHECKS_TICK_INTERVAL = 5
+        TELEGRAM_ENABLED = False
         DEBUG = True
 
     # formats

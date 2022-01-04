@@ -1,12 +1,30 @@
-import os, sys
+import asyncio
+from typing import Any, Awaitable
+
+# import os, sys
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from config import config
 
 
-def get_script_path():
-    return os.path.dirname(os.path.realpath(sys.argv[0]))
+async def run_sequence(*functions: Awaitable[Any]) -> None:
+    for function in functions:
+        await function
+
+
+async def run_parallel(*functions: Awaitable[Any]) -> None:
+    await asyncio.gather(*functions)
+
+
+async def subprocess_call(cmd: str):
+    proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+    stdout, stderr = await proc.communicate()
+    return stdout, stderr
+
+
+# def get_script_path():
+#     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
 def send_message(message):
@@ -16,7 +34,7 @@ def send_message(message):
         config.NOTIFICATIONS_URL,
         urlencode({"message": message, "silent": False}).encode(),
     )
-    #print(f'sending message{message}')
+    # print(f'sending message{message}')
     response_json = urlopen(request).read().decode()
     return f'sended message "{message}"'
 

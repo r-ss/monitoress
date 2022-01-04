@@ -10,6 +10,10 @@
 say_hello:
 	@echo "Hello World"
 
+tree:
+	clear
+	tree -L 3 -I __pycache__
+
 clean:
 	@echo "Clean Up..."
 	find . -type f -iname ".DS_Store" -delete
@@ -22,4 +26,4 @@ deploy:
 
 lint:
 	@echo "Linting..."
-	poetry run black --line-length 220 src/
+	poetry run black --line-length 220 --target-version py310 src/

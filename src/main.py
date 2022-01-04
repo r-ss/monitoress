@@ -9,6 +9,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # from repeated_timer import RepeatedTimer
 
+import asyncio
+
+
 from config import config
 
 from views.info import router as info_router
@@ -28,7 +31,7 @@ pm = ProbeManager()
 
 
 def timer_tick():
-    pm.check_all()
+    asyncio.run(pm.check_all())
 
 
 scheduler = BackgroundScheduler(timezone=config.TZ)
@@ -57,14 +60,8 @@ for r in routers:
 
 
 def start_uvicorn_server():
-    uvicorn.run(
-        "main:app",
-        host=config.HOST,
-        port=config.PORT,
-        reload=config.SERVER_WATCH_FILES,
-        app_dir=config.ENTRYPOINT.parent
-    )
-    pm.check_all()
+    uvicorn.run("main:app", host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir=config.ENTRYPOINT.parent)
+    # asyncio.run(pm.check_all())
 
 
 if __name__ == "__main__":

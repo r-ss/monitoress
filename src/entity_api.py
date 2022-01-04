@@ -1,28 +1,11 @@
-import requests
-from datetime import datetime
-
 from entity import Entity
-
-from config import config
-from log import log
-from utils import send_message
 
 
 class EntityAPI(Entity):
 
-    type = 'api'
+    type = "api"
 
-    def __init__(
-        self,
-        name,
-        interval=10,
-        important=True,
-        url=None,
-        look_for="status",
-        expected="ok",
-        schema=None,
-        extrafields=[]
-    ) -> None:
+    def __init__(self, name, interval=10, important=True, url=None, look_for="status", expected="ok", schema=None, extrafields=[]) -> None:
         super().__init__(name, interval, important)
 
         self.look_for = look_for
@@ -41,18 +24,13 @@ class EntityAPI(Entity):
         return False
 
     def process_probe(self, data):
-        # try:
-        probe = self.schema.parse_obj(data.json())
-
-        for item in self.extrafields:
-            self.extra[item] = dict(probe)[item]
-            # pass
-
-        log(self)
-
-        # except Exception as ex:
-        #     self.add_error(f"cannot parse probe for {self.name}")
-        #     return None
+        try:
+            probe = self.schema.parse_obj(data)
+            for item in self.extrafields:
+                self.extra[item] = dict(probe)[item]
+        except Exception as ex:
+            self.add_error(f"cannot parse probe for {self.name}")
+            return None
         return probe
 
     def __repr__(self):

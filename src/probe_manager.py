@@ -1,7 +1,3 @@
-# import os
-# from config import config
-# from datetime import datetime
-
 from typing import List, Optional, Union
 
 from entity_api import EntityAPI
@@ -13,6 +9,8 @@ from utils import singleton
 from pydantic import BaseModel
 
 from log import log
+
+from utils import run_parallel
 
 
 class ProbeBM(BaseModel):
@@ -43,6 +41,7 @@ class AKNotesBM(BaseModel):
     git_revision_hash: str
     datetime: str
 
+
 class SeleniumBM(BaseModel):
     resource: str
     git_revision_hash: str
@@ -60,9 +59,11 @@ class ProbeManager:
 
     def __init__(self):
 
+        self.bin = []
+
         # self.add_entity(Entity('foldwrap, digitalocean', '167.172.164.135', uri='probe', look_for='resource', expected='fold', schema=ProbeBM, interval=5*60))
 
-        self.add_entity(EntityPing("grani_microtic", interval=2 * 60, host="grani.ress.ws"))
+        self.add_entity(EntityPing("grani_microtic", interval=2 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
         self.add_entity(EntityAPI("foldwrap_api", interval=5 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
         self.add_entity(EntityBC("validators", interval=10 * 60))
 
@@ -75,7 +76,9 @@ class ProbeManager:
 
         self.add_entity(EntityAPI("ak_notes", interval=15 * 60, url="https://aknotes.ress.ws/info", look_for="resource", expected="ak_notes, info, CI/CD", schema=AKNotesBM))
 
-        self.add_entity(EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=['last_run', 'last_count']))
+        self.add_entity(
+            EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=["last_run", "last_count"])
+        )
 
         pass
 
@@ -95,65 +98,47 @@ class ProbeManager:
                             return False
         return True
 
-    # def check_all(self) -> None:
+    async def check_one(self, e, force=False):
+        f, s = 0, 0
+        if e.success_count:
+            s = int(e.success_count)
+        if e.fail_count:
+            f = int(e.fail_count)
 
-    #     log("- - - - - - - - -")
+        ratio = 0.0
+        if f + s > 0:
+            ratio = s / (s + f)
 
-    #     if self.paused:
-    #         log("paused")
-    #         return
+        dependencies = None
+        if e.depends_on:
+            dependencies = e.depends_on
 
-    #     for index, e in enumerate(self.entities):
+        if not self.is_dependencies_ok(e):
+            e.status = "skip"
+            log(f"skip {e.name} because dependencies is not ok")
+            data = {"name": e.name, "type": e.type, "interval": e.interval, "lastcheck": e.lastcheck_formatted, "status": "skip", "info": "dependency"}
+            self.bin.append(data)
+            return
 
-    #         # e.name = e.name + 'z'
+        await e.start_routine(force=force)
 
-    #         if not self.is_dependencies_ok(e):
-    #             # ae = self.entities[index]
-    #             e.status = "skip"
-    #             log(f"skip {e.name} because dependencies is not ok")
-    #             continue
+        data = {
+            "name": e.name,
+            "type": e.type,
+            "interval": e.interval,
+            "lastcheck": e.lastcheck_formatted,
+            "status": e.status,
+            "success_count": e.success_count,
+            "fail_count": e.fail_count,
+            "success_ratio": round(ratio, 4),
+            "dependencies": dependencies,
+            "extra": e.extra,
+        }
+        self.bin.append(data)
+        return
 
-    #         ok = e.start_routine()
+    async def check_all(self, force=False):
 
-    #         # log(f'{e.name} ok')
-
-    def check_all(self, force=False):
-
-        bin = []
-        for e in self.entities:
-
-            f, s = 0, 0
-            if e.success_count:
-                s = int(e.success_count)
-            if e.fail_count:
-                f = int(e.fail_count)
-
-            ratio = 0.0
-            if f + s > 0:
-                ratio = s / (s + f)
-
-            dependencies = None
-            if e.depends_on:
-                dependencies = e.depends_on
-
-            if not self.is_dependencies_ok(e):
-                e.status = "skip"
-                log(f"skip {e.name} because dependencies is not ok")
-                continue
-
-            e.start_routine(force=force)
-
-            bin.append({
-                "name": e.name,
-                "type": e.type,
-                "interval": e.interval,
-                "lastcheck": e.lastcheck_formatted,
-                "status": e.status,
-                "success_count": e.success_count,
-                "fail_count": e.fail_count,
-                "success_ratio": round(ratio, 4),
-                "dependencies": dependencies,
-                "extra": e.extra}
-            )
-
-        return bin
+        self.bin = []
+        await run_parallel(*[self.check_one(e, force=force) for e in self.entities])
+        return self.bin

@@ -1,35 +1,27 @@
-import requests
-from datetime import datetime
-
 from entity import Entity
-
-from config import config
-from log import log
-from utils import send_message
-
-import subprocess  # For executing a shell command
+from utils import subprocess_call
 
 
 class EntityPing(Entity):
 
-    type = 'ping'
+    type = "ping"
 
-    def __init__(self, name, interval=10, important=False, host=None) -> None:
+    def __init__(self, name, interval=10, important=False, host=None, expect_in_output=None) -> None:
         super().__init__(name, interval, important)
 
         self.host = host
         self.cmd = f"ping -c 1 {host}"
+        self.expect_in_output = expect_in_output
 
-    def send_probe_request(self):
+    async def send_probe_request(self):
         self.errors_verbose = []
         self.fired = True
         try:
-            output = subprocess.check_output(self.cmd, shell=True)
+            stdout, stderr = await subprocess_call(self.cmd)
         except Exception as ex:
-            print("exception")
-            print(ex)
+            self.add_error(f"error with send_probe_request in EntityPing for {self.name}")
             return None
-        return output
+        return stdout
 
     def process_probe(self, output):
 
@@ -45,10 +37,12 @@ class EntityPing(Entity):
 
     def validate_response(self, probe) -> bool:
         try:
-            # log(probe)
-            if "64 bytes from 171.25.165.250" in probe:
+            if not self.expect_in_output:
                 return True
+            if self.expect_in_output in probe:
+                return True
+            else:
+                self.add_error(f"expected output {self.expect_in_output} missed in EntityPing for {self.name}")
         except Exception as ex:
             self.add_error(f"cannot validate {self.name}")
-        self.add_error(f"invalid probe {self.name}")
         return False

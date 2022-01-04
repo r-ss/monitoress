@@ -22,7 +22,7 @@ class ValidatorsBM(BaseModel):
 
 class EntityBC(Entity):
 
-    type = 'beaconcha'
+    type = "beaconcha"
 
     # url = f"https://beaconcha.in/api/v1/validator/{os.environ.get('VALIDATORS')}"
 
@@ -33,8 +33,8 @@ class EntityBC(Entity):
 
     def process_probe(self, data):
         try:
-            if data.json()["status"] == "OK":
-                validators = ValidatorsBM.parse_obj(data.json()["data"])
+            if data["status"] == "OK":
+                validators = ValidatorsBM.parse_obj(data["data"])
             else:
                 self.add_error("validators status received not OK")
                 return None

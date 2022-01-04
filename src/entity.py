@@ -1,4 +1,7 @@
-import requests
+from typing import Union
+
+# import requests
+
 from ress_redis import RessRedisAbstraction
 from datetime import datetime
 
@@ -8,13 +11,14 @@ from utils import send_message
 
 from emoji import emojize
 
+import aiohttp
 
 redis = RessRedisAbstraction()
 
 
 class Entity:
 
-    type = 'general'
+    type = "general"
 
     def __init__(self, name, interval=10, important=True) -> None:
 
@@ -65,7 +69,7 @@ class Entity:
         return redis.set(self.redis_fields["fail_count"], 0)
 
     def add_error(self, error_description):
-        log(error_description)
+        log(error_description, level="error")
         self.failed = True
         self.errors_verbose.append(error_description)
 
@@ -88,23 +92,25 @@ class Entity:
                 return True
         return False
 
-    def send_probe_request(self):
+    async def send_probe_request(self):
+
+        log("making connection...", level="debug")
+        # await asyncio.sleep(2.5)
+
         self.errors_verbose = []
         self.fired = True
         try:
-            r = requests.get(self.url, timeout=10)
-            r.raise_for_status()
-        except requests.exceptions.HTTPError as err:
-            self.add_error(f"HTTPError with request {self.name}")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(self.url) as resp:
+                    r = await resp.json()
+        except aiohttp.web.ClientError as err:
+            self.add_error(f"aiohttp ClientError with {self.name}")
             return None
-        except requests.exceptions.ConnectionError as err:
-            self.add_error(f"ConnectionError with request {self.name}")
+        except aiohttp.web.HTTPServerError as err:
+            self.add_error(f"aiohttp HTTPServerError with {self.name}")
             return None
-        except requests.exceptions.ReadTimeout as err:
-            self.add_error(f"TimeoutError with request {self.name}")
-            return None
-        except requests.exceptions.RequestException as err:
-            self.add_error(f"Сannot probe {self.name}")
+        except Exception as err:
+            self.add_error(f"Send probe error for {self.name}")
             return None
         return r
 
@@ -118,18 +124,16 @@ class Entity:
         self.status = "ok"
 
     def commit_fail(self):
-        #log('commit fail')
+        # log('commit fail')
         self.failed = True
         self.fail_increment()
         self.status = "error"
-        log(f"error happened with {self.name}")
+        log(f"Error happened with {self.name}", level="error")
         if self.important and not self.fail_notification_sended:
             send_message(self.error_notification_text)
             self.fail_notification_sended = True
 
-    def start_routine(self, force=False):
-
-        # skip if interval not reached
+    async def start_routine(self, force=False):
 
         # skip if interval not reached
         if self.is_too_early and not force:
@@ -138,7 +142,7 @@ class Entity:
 
         self.lastcheck = datetime.now(config.TZ)
 
-        data = self.send_probe_request()
+        data = await self.send_probe_request()
         if not data:
             self.commit_fail()
             return False
@@ -161,13 +165,13 @@ class Entity:
 
     @property
     def nomnoml_block(self):
-        """ returns string in momnoml syntax for represent block on web """
+        """returns string in momnoml syntax for represent block on web"""
         """ [<green> grani_microtic5  |   status: ok, 14:35  |  last fail: 27.12.2021, 14:05] """
 
-        color = '<green>'
+        color = "<green>"
         if self.failed:
-            color = '<red>'
-        return f'[{color} {self.name}  |  type: {self.type}  |  status: {self.status}  |  last check: {self.lastcheck_formatted}]\n'
+            color = "<red>"
+        return f"[{color} {self.name}  |  type: {self.type}  |  status: {self.status}  |  last check: {self.lastcheck_formatted}]\n"
 
     def __repr__(self):
         return "Entity-obj-%s" % self.name
