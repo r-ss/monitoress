@@ -16,6 +16,16 @@ import aiohttp
 redis = RessRedisAbstraction()
 
 
+class ProbeRequestError(Exception):
+    """Custom error on probe requests"""
+
+    def __init__(self, message: str) -> None:
+        self.message = message
+        super().__init__(message)
+
+    """ Usage: raise ProbeRequestError(message="shit happened") """
+
+
 class Entity:
 
     type = "general"
@@ -94,7 +104,7 @@ class Entity:
 
     async def send_probe_request(self):
 
-        log("making connection...", level="debug")
+        # log("making connection...", level="debug")
         # await asyncio.sleep(2.5)
 
         self.errors_verbose = []
@@ -137,7 +147,7 @@ class Entity:
 
         # skip if interval not reached
         if self.is_too_early and not force:
-            log(f"skip {self.name} because interval not reached")
+            log(f"skip {self.name} because interval not reached", level="debug")
             return True
 
         self.lastcheck = datetime.now(config.TZ)

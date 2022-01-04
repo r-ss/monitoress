@@ -29,6 +29,7 @@ class RessBackupManagerBM(BaseModel):
     resource: str
     datetime: str
     last_run: str
+    total_size_gb: str
 
 
 class TinkerboardBM(BaseModel):
@@ -69,7 +70,7 @@ class ProbeManager:
 
         ress_backup_manager = EntityAPI("ress_backup_manager", interval=5 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         ress_backup_manager.depends_on = ["grani_microtic"]
-        ress_backup_manager.extrafields = ["last_run"]
+        ress_backup_manager.extrafields = ["last_run", "total_size_gb"]
         self.add_entity(ress_backup_manager)
 
         self.add_entity(EntityAPI("eland_tinkerboard", interval=5 * 60, url="http://eland.ress.ws:8999/", look_for="resource", expected="tinkerboard", schema=TinkerboardBM))
@@ -79,8 +80,6 @@ class ProbeManager:
         self.add_entity(
             EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=["last_run", "last_count"])
         )
-
-        pass
 
     def add_entity(self, e: Union[EntityAPI, EntityBC, EntityPing]):
         self.entities.append(e)
@@ -94,7 +93,7 @@ class ProbeManager:
                 for n in self.entities:
                     if name == n.name:
                         if n.status != "ok":
-                            log(f"stop at dependency {name} for {entity.name}")
+                            log(f"stop at dependency {name} for {entity.name}", level="debug")
                             return False
         return True
 
@@ -115,7 +114,7 @@ class ProbeManager:
 
         if not self.is_dependencies_ok(e):
             e.status = "skip"
-            log(f"skip {e.name} because dependencies is not ok")
+            log(f"skip {e.name} because dependencies is not ok", level="debug")
             data = {"name": e.name, "type": e.type, "interval": e.interval, "lastcheck": e.lastcheck_formatted, "status": "skip", "info": "dependency"}
             self.bin.append(data)
             return
@@ -140,5 +139,7 @@ class ProbeManager:
     async def check_all(self, force=False):
 
         self.bin = []
+
+        log(f"sending {len(self.entities)} probes...", level="debug")
         await run_parallel(*[self.check_one(e, force=force) for e in self.entities])
         return self.bin

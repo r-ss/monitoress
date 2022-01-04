@@ -9,7 +9,6 @@ python = "^3.10"
 fastapi = "^0.70.0"
 uvicorn = {extras = ["standard"], version = "^0.16.0"}
 fastapi-utils = "^0.2.1"
-requests = "^2.26.0"
 APScheduler = "^3.8.1"
 redis = "^4.0.2"
 loguru = "^0.5.3"
