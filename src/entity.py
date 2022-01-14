@@ -113,10 +113,10 @@ class Entity:
             async with aiohttp.ClientSession() as session:
                 async with session.get(self.url) as resp:
                     r = await resp.json()
-        except aiohttp.web.ClientError as err:
+        except aiohttp.ClientError as err:
             self.add_error(f"aiohttp ClientError with {self.name}")
             return None
-        except aiohttp.web.HTTPServerError as err:
+        except aiohttp.HTTPServerError as err:
             self.add_error(f"aiohttp HTTPServerError with {self.name}")
             return None
         except Exception as err:
