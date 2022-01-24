@@ -111,14 +111,14 @@ class Entity:
         self.fired = True
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(self.url) as resp:
+                async with session.get(self.url, timeout=3) as resp:
                     r = await resp.json()
-        except aiohttp.ClientError as err:
+        except aiohttp.ClientConnectionError as err:
             self.add_error(f"aiohttp ClientError with {self.name}")
             return None
-        except aiohttp.HTTPServerError as err:
-            self.add_error(f"aiohttp HTTPServerError with {self.name}")
-            return None
+        # except aiohttp.HTTPServerError as err:
+        #     self.add_error(f"aiohttp HTTPServerError with {self.name}")
+        #     return None
         except Exception as err:
             self.add_error(f"Send probe error for {self.name}")
             return None
