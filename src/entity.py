@@ -111,7 +111,7 @@ class Entity:
         self.fired = True
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(self.url, timeout=3) as resp:
+                async with session.get(self.url, timeout=10) as resp:
                     r = await resp.json()
         except aiohttp.ClientConnectionError as err:
             self.add_error(f"aiohttp ClientError with {self.name}")
