@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from entity_api import EntityAPI
-from entity_bc import EntityBC
+# from entity_bc import EntityBC
 from entity_ping import EntityPing
 
 from utils import singleton
@@ -55,7 +55,7 @@ class SeleniumBM(BaseModel):
 @singleton
 class ProbeManager:
 
-    entities: List[Union[EntityAPI, EntityBC, EntityPing]] = []
+    entities: List[Union[EntityAPI, EntityPing]] = []
     paused = False
 
     def __init__(self):
@@ -66,7 +66,7 @@ class ProbeManager:
 
         self.add_entity(EntityPing("grani_microtic", interval=2 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
         self.add_entity(EntityAPI("foldwrap_api", interval=5 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
-        self.add_entity(EntityBC("validators", interval=10 * 60))
+        # self.add_entity(EntityBC("validators", interval=10 * 60))
 
         ress_backup_manager = EntityAPI("ress_backup_manager", interval=5 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         ress_backup_manager.depends_on = ["grani_microtic"]
@@ -81,13 +81,13 @@ class ProbeManager:
             EntityAPI("selenium_playground", interval=120 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=["last_run", "last_count"])
         )
 
-    def add_entity(self, e: Union[EntityAPI, EntityBC, EntityPing]):
+    def add_entity(self, e: Union[EntityAPI, EntityPing]):
         self.entities.append(e)
 
     def get_entity_by_index(self, index):
         return self.entities[index]
 
-    def is_dependencies_ok(self, entity: Union[EntityAPI, EntityBC, EntityPing]):
+    def is_dependencies_ok(self, entity: Union[EntityAPI, EntityPing]):
         if len(entity.depends_on):
             for name in entity.depends_on:
                 for n in self.entities:
