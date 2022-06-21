@@ -66,7 +66,7 @@ class ProbeManager:
 
         self.add_entity(EntityPing("grani_microtic", interval=2 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
         self.add_entity(EntityAPI("foldwrap_api", interval=5 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
-        # self.add_entity(EntityBC("validators", interval=10 * 60))
+        self.add_entity(EntityBC("validators", interval=20 * 60))
 
         ress_backup_manager = EntityAPI("ress_backup_manager", interval=5 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         ress_backup_manager.depends_on = ["grani_microtic"]

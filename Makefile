@@ -1,11 +1,4 @@
 .DEFAULT_GOAL := say_hello
-# .PHONY: test
-
-# .PHONY: all say_hello generate clean
-
-# fix tabs - perl -pi -e 's/^  */\t/' Makefile
-# test:
-# 	PYTHONPATH=. pytest
 
 say_hello:
 	@echo "Hello World"

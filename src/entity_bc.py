@@ -24,8 +24,6 @@ class EntityBC(Entity):
 
     type = "beaconcha"
 
-    # url = f"https://beaconcha.in/api/v1/validator/{os.environ.get('VALIDATORS')}"
-
     def __init__(self, name, interval=10, important=True) -> None:
         super().__init__(name, interval, important)
 
