@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from entity_api import EntityAPI
-# from entity_bc import EntityBC
+from entity_bc import EntityBC
 from entity_ping import EntityPing
 
 from utils import singleton
