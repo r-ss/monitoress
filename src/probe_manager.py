@@ -65,6 +65,7 @@ class ProbeManager:
         # self.add_entity(Entity('foldwrap, digitalocean', '167.172.164.135', uri='probe', look_for='resource', expected='fold', schema=ProbeBM, interval=5*60))
 
         self.add_entity(EntityPing("grani_microtic", interval=2 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
+        self.add_entity(EntityPing("ress.ws", interval=60 * 60, host="ress.ws", expect_in_output="167.172.164.135"))
         self.add_entity(EntityAPI("foldwrap_api", interval=5 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
         self.add_entity(EntityBC("validators", interval=20 * 60))
 
