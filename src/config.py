@@ -17,7 +17,7 @@ class config:
 
     # mode switch
     PRODUCTION: bool = True
-    if socket.gethostname() == "ress-mpb.local":
+    if socket.gethostname() == "macbookpro":
         PRODUCTION = False
 
     DEBUG: bool = not PRODUCTION
@@ -25,6 +25,7 @@ class config:
 
     # secrets
     SECRET_KEY = str(os.environ.get("SECRET_KEY"))
+    REDIS_PASS = str(os.environ.get("REDIS_PASS"))
 
     # server and deploy config
     HOST = "0.0.0.0"
@@ -53,4 +54,4 @@ class config:
     DATETIME_FORMAT_TECHNICAL: str = "%Y-%m-%d %H:%M:%S"
     DATETIME_FORMAT_HUMAN: str = "%d.%m.%Y %H:%M:%S"
     # TIMEZONE_STRING = 'Europe/Moscow'
-    TZ = pytz.timezone("Europe/Moscow")
+    TZ = pytz.timezone("Europe/Madrid")

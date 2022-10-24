@@ -1,9 +1,10 @@
 import redis
 
+from config import config
 
 class RessRedisAbstraction:
-    def __init__(self, host="localhost", port=6379, db=2):
-        self.r = redis.Redis(host=host, port=port, db=db)
+    def __init__(self, host="localhost", port=6379, db=0, password=None):
+        self.r = redis.Redis(host=host, port=port, db=db, password=config.REDIS_PASS)
 
     def get(self, k):
         v = self.r.get(k)
@@ -42,7 +43,8 @@ docker run -d -p 6379:6379 -v /home/ress/redis_data:/data --name redis-server re
 
 docker exec -it redis-server redis-cli
 
-
+Run without persistence:
+docker run -d -p 6379:6379 --name redis-server redis --requirepass redisPassword
 
 
 USAGE EXAMPLE
