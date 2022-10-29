@@ -70,10 +70,10 @@ class ProbeManager:
 
         # self.add_entity(EntityTest("test_olny", interval=1 * 10, url="/nya/", look_for="status", expected="always true", schema=EntityTestStatusBM))
 
-        # self.add_entity(EntityPing("grani_microtic", interval=5 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
-        # self.add_entity(EntityPing("ress.ws", interval=60 * 60, host="ress.ws", expect_in_output="167.172.164.135"))
-        # self.add_entity(EntityAPI("foldwrap_api", interval=15 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
-        # self.add_entity(EntityBC("validators", interval=20 * 60))
+        self.add_entity(EntityPing("grani_microtic", interval=5 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
+        self.add_entity(EntityPing("ress.ws", interval=60 * 60, host="ress.ws", expect_in_output="167.172.164.135"))
+        self.add_entity(EntityAPI("foldwrap_api", interval=15 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
+        self.add_entity(EntityBC("validators", interval=20 * 60))
 
         # ress_backup_manager = EntityAPI("ress_backup_manager", interval=30 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         # ress_backup_manager.depends_on = ["grani_microtic"]
@@ -84,7 +84,7 @@ class ProbeManager:
 
         # self.add_entity(EntityAPI("ak_notes", interval=15 * 60, url="https://aknotes.ress.ws/info", look_for="resource", expected="ak_notes, info, CI/CD", schema=AKNotesBM))
 
-        # self.add_entity(EntityAPI("selenium_playground", interval=380 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=["last_run", "last_count"]))
+        self.add_entity(EntityAPI("selenium_playground", interval=380 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="selenium-playground", schema=SeleniumBM, extrafields=["last_run", "last_count"]))
 
     def add_entity(self, e: Union[EntityAPI, EntityPing]):
         self.entities.append(e)
