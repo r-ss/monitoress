@@ -107,6 +107,7 @@ class Entity:
         # log("making connection...", level="debug")
         # await asyncio.sleep(2.5)
 
+
         self.errors_verbose = []
         self.fired = True
         try:
@@ -144,6 +145,7 @@ class Entity:
             self.fail_notification_sended = True
 
     async def start_routine(self, force=False):
+
 
         # skip if interval not reached
         if self.is_too_early and not force:

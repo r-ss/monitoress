@@ -7,6 +7,8 @@ from fastapi_utils.inferring_router import InferringRouter
 
 from config import config
 
+from log import log
+
 from pydantic import BaseModel
 
 from probe_manager import ProbeManager
@@ -29,7 +31,7 @@ class SendProbeCBV:
 
         pid = int(probe_id)
         e = pm.get_entity_by_index(pid)
-        print(e)
+        log(str(e))
 
         ok = await e.start_routine()
 
@@ -48,7 +50,8 @@ class SendProbeCBV:
     @router.get("/api/all", summary="Get All Probes")
     async def get_all_probes(self):
 
-        probes = await pm.check_all(force=True)
+        # probes = await pm.check_all(force=True)
+        probes = await pm.show_cached()
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,

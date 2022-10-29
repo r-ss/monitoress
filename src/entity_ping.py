@@ -33,7 +33,7 @@ class EntityPing(Entity):
         return probe
 
     def __repr__(self):
-        return "EntityAPI-obj-%s" % self.name
+        return "EntityPing-obj-%s" % self.name
 
     def validate_response(self, probe) -> bool:
         try:

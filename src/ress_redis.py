@@ -2,32 +2,38 @@ import redis
 
 from config import config
 
+prefix = config.APP_NAME # "redisproject"  # added to every key to minimize collisions risk
+expiration = 10 * 60
+
 class RessRedisAbstraction:
-    def __init__(self, host="localhost", port=6379, db=0, password=None):
-        self.r = redis.Redis(host=host, port=port, db=db, password=config.REDIS_PASS)
+    def __init__(self, host="localhost", port=6379, db=0):
+        # self.r = redis.Redis(host=host, port=port, db=db, password=config.REDIS_PASS)
+        self.r = redis.Redis(host=host, port=port, db=db)
 
     def get(self, k):
-        v = self.r.get(k)
+        v = self.r.get(f"{prefix}{k}")
         if v:
             if v.decode() == "None":
                 return None
             return v.decode()
         return None
 
-    def set(self, k, v):
-        self.r.set(k, v)
+    def set(self, k, v, exp=expiration):
+        self.r.set(f"{prefix}{k}", v, ex=exp)
         return True
 
     def incr(self, k):
-        self.r.incr(k)
+        self.r.incr(f"{prefix}{k}")
         return True
 
     def delete(self, k):
-        self.r.delete(k)
+        self.r.delete(f"{prefix}{k}")
         return True
 
     def ping(self):
         return self.r.ping()
+
+
 
 
 """

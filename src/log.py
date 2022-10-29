@@ -23,9 +23,7 @@ def log(message: str, level: str = "info") -> None:
     match level.lower():
         case "debug":
             logger.debug(message)
-        case "warn":
-            logger.warning(message)
-        case "warning":
+        case "warn" | "warning":
             logger.warning(message)
         case "error":
             logger.error(message)

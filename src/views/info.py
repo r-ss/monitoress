@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 import platform
-import subprocess
+# import subprocess
 
 from fastapi import status
 from fastapi_utils.cbv import cbv
@@ -31,21 +31,21 @@ class InfoCBV:
         access via /info url
         """
 
-        load1, load5, load15 = os.getloadavg()
+        # load1, load5, load15 = os.getloadavg()
 
-        def get_git_revision_short_hash() -> str:
-            return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
+        # def get_git_revision_short_hash() -> str:
+        #     return subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode("ascii").strip()
 
-        try:
-            git_revision_hash = get_git_revision_short_hash()
-        except:
-            git_revision_hash = "error"
+        # try:
+        #     git_revision_hash = get_git_revision_short_hash()
+        # except:
+        #     git_revision_hash = "error"
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
                 "resource": config.APP_NAME,
-                "git_revision_hash": git_revision_hash,
+                # "git_revision_hash": git_revision_hash,
                 "datetime": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
                 "os": os.name,
                 "platform": platform.system(),
@@ -53,7 +53,7 @@ class InfoCBV:
                 "python version": platform.python_version(),
                 "testing": config.TESTING_MODE,
                 "production": config.PRODUCTION,
-                "load averages": f"{load1:.2f} {load5:.2f} {load15:.2f}",
-                "redis_available": redis.ping(),
+                # "load averages": f"{load1:.2f} {load5:.2f} {load15:.2f}",
+                # "redis_available": redis.ping(),
             },
         )

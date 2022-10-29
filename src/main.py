@@ -3,6 +3,7 @@ import uvicorn
 # from dotenv import load_dotenv
 
 from fastapi import FastAPI, HTTPException, status
+from fastapi.testclient import TestClient
 from fastapi.middleware.cors import CORSMiddleware
 
 # from fastapi.testclient import TestClient
@@ -16,6 +17,7 @@ from config import config
 
 from views.info import router as info_router
 from views.probe import router as send_probe
+from views.selftest import router as selftest_router
 
 from probe_manager import ProbeManager
 
@@ -23,9 +25,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 # from apscheduler.schedulers.blocking import BlockingScheduler
 
-# load_dotenv(dotenv_path=config.SECRETS_ENV_PATH)
-
-routers = [info_router, send_probe]
+routers = [info_router, send_probe, selftest_router]
 
 pm = ProbeManager()
 
@@ -38,7 +38,7 @@ scheduler = BackgroundScheduler(timezone=config.TZ)
 scheduler.add_job(timer_tick, "interval", seconds=config.CHECKS_TICK_INTERVAL)
 
 app = FastAPI()
-# testclient = TestClient(app)
+testclient = TestClient(app)
 
 app.add_middleware(
     CORSMiddleware,
