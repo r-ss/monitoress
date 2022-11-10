@@ -56,7 +56,7 @@ class TorrentDownloaderBM(BaseModel):
     datetime: str
     redis_available: bool
     last_run: Optional[str]
-    last_count: Optional[int]
+    last_count: Optional[str]
 
 
 @singleton
@@ -89,8 +89,8 @@ class ProbeManager:
 
         # self.add_entity(EntityAPI("ak_notes", interval=15 * 60, url="https://aknotes.ress.ws/info", look_for="resource", expected="ak_notes, info, CI/CD", schema=AKNotesBM))
 
-        # self.add_entity(EntityAPI("torrent_downloader", interval=380 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="torrent-downloader", schema=TorrentDownloaderBM, extrafields=["last_run", "last_count"]))
-        self.add_entity(EntityAPI("torrent_downloader", interval=380 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="torrent-downloader", schema=TorrentDownloaderBM))
+        self.add_entity(EntityAPI("torrent_downloader", interval=380 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="torrent-downloader", schema=TorrentDownloaderBM, extrafields=["last_run", "last_count"]))
+        # self.add_entity(EntityAPI("torrent_downloader", interval=380 * 60, url="http://foldwrap.com:8666/info", look_for="resource", expected="torrent-downloader", schema=TorrentDownloaderBM))
 
     def add_entity(self, e: Union[EntityAPI, EntityPing]):
         self.entities.append(e)

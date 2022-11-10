@@ -7,8 +7,8 @@ expiration = 10 * 60
 
 class RessRedisAbstraction:
     def __init__(self, host="localhost", port=6379, db=0):
-        # self.r = redis.Redis(host=host, port=port, db=db, password=config.REDIS_PASS)
-        self.r = redis.Redis(host=host, port=port, db=db)
+        self.r = redis.Redis(host=host, port=port, db=db, password=config.REDIS_PASS)
+        # self.r = redis.Redis(host=host, port=port, db=db)
 
     def get(self, k):
         v = self.r.get(f"{prefix}{k}")

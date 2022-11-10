@@ -65,5 +65,6 @@ def start_uvicorn_server():
 
 
 if __name__ == "__main__":
+    # asyncio.run(pm.check_all())
     scheduler.start()
     start_uvicorn_server()
