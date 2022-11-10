@@ -25,4 +25,4 @@ def test_info(client):
     assert status_code == 200
     assert result["resource"] == config.APP_NAME
     assert result["testing"] is True
-    assert result["python version"].startswith("3.11") is True
+    assert result["python version"].startswith("3.10") is True

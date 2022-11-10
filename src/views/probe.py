@@ -31,9 +31,9 @@ class SendProbeCBV:
 
         pid = int(probe_id)
         e = pm.get_entity_by_index(pid)
-        log(str(e))
+        # log(str(e))
 
-        ok = await e.start_routine()
+        # ok = await e.start_routine()
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,

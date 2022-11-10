@@ -17,7 +17,6 @@ from config import config
 
 from views.info import router as info_router
 from views.probe import router as send_probe
-from views.selftest import router as selftest_router
 
 from probe_manager import ProbeManager
 
@@ -25,7 +24,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 # from apscheduler.schedulers.blocking import BlockingScheduler
 
-routers = [info_router, send_probe, selftest_router]
+routers = [info_router, send_probe]
 
 pm = ProbeManager()
 
@@ -60,7 +59,7 @@ for r in routers:
 
 
 def start_uvicorn_server():
-    uvicorn.run("main:app", host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir=config.ENTRYPOINT.parent)
+    uvicorn.run("main:app", host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir=str(config.ENTRYPOINT.parent))
     # asyncio.run(pm.check_all())
 
 

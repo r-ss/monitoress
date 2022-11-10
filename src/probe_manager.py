@@ -1,4 +1,6 @@
-from typing import List, Optional, Union
+from typing import List, Dict, Optional, Union
+
+from datetime import datetime
 
 from entity_api import EntityAPI
 from entity_bc import EntityBC
@@ -8,13 +10,24 @@ from entity_ping import EntityPing
 
 from utils import singleton
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from log import log
 
 from utils import run_parallel
 
 
+class ResponseBM(BaseModel):
+    name: str
+    type: str
+    interval: int
+    lastcheck: str
+    status: str
+    success_count: int | None = 0 
+    fail_count: int | None = 0 
+    success_ratio: float | None = 0.0
+    dependencies: List | None
+    extra: Dict
 
 
 class ProbeBM(BaseModel):
@@ -109,6 +122,11 @@ class ProbeManager:
         return True
 
     async def check_one(self, e, force=False, get_from_cache=False):
+
+        if not e.lastcheck:
+            await e.start_routine(force=True)
+
+
         f, s = 0, 0
         if e.success_count:
             s = int(e.success_count)
@@ -133,19 +151,29 @@ class ProbeManager:
 
             await e.start_routine(force=force)
 
+        
+
         data = {
             "name": e.name,
             "type": e.type,
             "interval": e.interval,
             "lastcheck": e.lastcheck_formatted,
             "status": e.status,
-            "success_count": e.success_count,
-            "fail_count": e.fail_count,
             "success_ratio": round(ratio, 4),
             "dependencies": dependencies,
-            "extra": e.extra,
+            "extra": dict(e.extra),
         }
-        self.bin.append(data)
+
+        if e.success_count:
+            data["success_count"] = e.success_count
+        if e.fail_count:
+            data["fail_count"] = e.fail_count
+
+
+        z = ResponseBM.parse_obj(data)
+
+
+        self.bin.append(z.dict())
         return
 
     async def check_all(self, force=False):
