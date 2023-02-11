@@ -91,7 +91,12 @@ class ProbeManager:
         self.add_entity(EntityAPI("foldwrap_api", interval=15 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
         self.add_entity(EntityBC("validators", interval=20 * 60))
 
-        self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
+        # self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
+
+        self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
+
+        self.add_entity(EntityAPI("energram_deploytool", interval=60 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
+
 
         # ress_backup_manager = EntityAPI("ress_backup_manager", interval=30 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
         # ress_backup_manager.depends_on = ["grani_microtic"]
