@@ -94,8 +94,12 @@ class ProbeManager:
         # self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
 
         self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
-
         self.add_entity(EntityAPI("energram_deploytool", interval=60 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
+
+        self.add_entity(EntityAPI("ursadate_api", interval=20 * 60, url="https://api.ursadate.com/info", look_for="resource", expected="ursadate", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("ursadate_deploytool", interval=180 * 60, url="https://deploy.ursadate.com/info", look_for="resource", expected="ursa_deploytool", schema=EnergramAPIBM))
+
+
 
 
         # ress_backup_manager = EntityAPI("ress_backup_manager", interval=30 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
