@@ -50,7 +50,7 @@ docker run -d -p 6379:6379 -v /home/ress/redis_data:/data --name redis-server re
 docker exec -it redis-server redis-cli
 
 Run without persistence:
-docker run -d -p 6379:6379 --name redis-server redis --requirepass redisPassword
+docker run -d -p 6379:6379 --restart unless-stopped --name redis-server redis --requirepass redis2password
 
 
 USAGE EXAMPLE
