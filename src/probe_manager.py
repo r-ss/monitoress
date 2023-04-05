@@ -99,7 +99,7 @@ class ProbeManager:
         self.add_entity(EntityAPI("ursadate_api", interval=20 * 60, url="https://api.ursadate.com/info", look_for="resource", expected="ursadate", schema=EnergramAPIBM))
         self.add_entity(EntityAPI("ursadate_deploytool", interval=180 * 60, url="https://deploy.ursadate.com/info", look_for="resource", expected="ursa_deploytool", schema=EnergramAPIBM))
 
-        self.add_entity(EntityAPI("fresscards_api", interval=25 * 60, url="https://fresscards.ress.ws/info", look_for="resource", expected="fresscards", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("fresscards_api", interval=25 * 60, url="https://fresscards.ress.ws/api/v1/info", look_for="resource", expected="fresscards", schema=EnergramAPIBM))
         self.add_entity(EntityAPI("fresscards_deploytool", interval=320 * 60, url="https://fresscardsdeploy.ress.ws/info", look_for="resource", expected="fresscards_deploytool", schema=EnergramAPIBM))
 
 
