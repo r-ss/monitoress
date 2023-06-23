@@ -103,7 +103,7 @@ class ProbeManager:
         self.add_entity(EntityAPI("fresscards_deploytool", interval=320 * 60, url="https://fresscardsdeploy.ress.ws/info", look_for="resource", expected="fresscards_deploytool", schema=EnergramAPIBM))
 
 
-
+        self.add_entity(EntityAPI("dankomedia_api", interval=25 * 60, url="https://danko.media/api/v1/info", look_for="resource", expected="danko-media", schema=EnergramAPIBM))
 
 
         # ress_backup_manager = EntityAPI("ress_backup_manager", interval=30 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)
