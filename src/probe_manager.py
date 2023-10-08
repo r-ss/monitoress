@@ -39,7 +39,11 @@ class ProbeBM(BaseModel):
 class FoldWrapAPIBM(BaseModel):
     resource: str
     datetime: str
-    uptime: str
+
+class FoldWrapFigmaServiceBM(BaseModel):
+    resource: str
+    result: str
+    service_response: dict
 
 class EnergramAPIBM(BaseModel):
     resource: str
@@ -86,24 +90,25 @@ class ProbeManager:
 
         # self.add_entity(EntityTest("test_olny", interval=1 * 10, url="/nya/", look_for="status", expected="always true", schema=EntityTestStatusBM))
 
-        self.add_entity(EntityPing("grani_microtic", interval=5 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
-        # self.add_entity(EntityPing("ress.ws", interval=60 * 60, host="ress.ws", expect_in_output="167.172.164.135"))
-        self.add_entity(EntityAPI("foldwrap_api", interval=15 * 60, url="http://api.foldwrap.com/info", look_for="resource", expected="info", schema=FoldWrapAPIBM))
-        self.add_entity(EntityBC("validators", interval=20 * 60))
+        self.add_entity(EntityPing("grani_microtic", interval=15 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
+        self.add_entity(EntityAPI("foldwrap", interval=15 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
+        self.add_entity(EntityAPI("figma_service", interval=20 * 60, url="https://foldwrap.com/api/v1/figma/status", look_for="result", expected="service ok", schema=FoldWrapFigmaServiceBM))
+
+        self.add_entity(EntityBC("validators", interval=25 * 60))
 
         # self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
 
-        self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
-        self.add_entity(EntityAPI("energram_deploytool", interval=60 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("energram_api", interval=55 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("energram_deploytool", interval=360 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
 
-        self.add_entity(EntityAPI("ursadate_api", interval=20 * 60, url="https://api.ursadate.com/info", look_for="resource", expected="ursadate", schema=EnergramAPIBM))
-        self.add_entity(EntityAPI("ursadate_deploytool", interval=180 * 60, url="https://deploy.ursadate.com/info", look_for="resource", expected="ursa_deploytool", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("ursadate_api", interval=50 * 60, url="https://api.ursadate.com/info", look_for="resource", expected="ursadate", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("ursadate_deploytool", interval=380 * 60, url="https://deploy.ursadate.com/info", look_for="resource", expected="ursa_deploytool", schema=EnergramAPIBM))
 
-        self.add_entity(EntityAPI("fresscards_api", interval=25 * 60, url="https://fresscards.ress.ws/api/v1/info", look_for="resource", expected="fresscards", schema=EnergramAPIBM))
-        self.add_entity(EntityAPI("fresscards_deploytool", interval=320 * 60, url="https://fresscardsdeploy.ress.ws/info", look_for="resource", expected="fresscards_deploytool", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("fresscards_api", interval=95 * 60, url="https://fresscards.ress.ws/api/v1/info", look_for="resource", expected="fresscards", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("fresscards_deploytool", interval=3920 * 60, url="https://fresscardsdeploy.ress.ws/info", look_for="resource", expected="fresscards_deploytool", schema=EnergramAPIBM))
 
 
-        self.add_entity(EntityAPI("dankomedia_api", interval=25 * 60, url="https://danko.media/api/v1/info", look_for="resource", expected="danko-media", schema=EnergramAPIBM))
+        self.add_entity(EntityAPI("dankomedia_api", interval=55 * 60, url="https://danko.media/api/v1/info", look_for="resource", expected="danko-media", schema=EnergramAPIBM))
 
 
         # ress_backup_manager = EntityAPI("ress_backup_manager", interval=30 * 60, url="http://grani.ress.ws:9003/info", look_for="resource", expected="ress_backup_manager", schema=RessBackupManagerBM)

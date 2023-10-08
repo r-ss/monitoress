@@ -5,7 +5,7 @@ from utils import bytes_to_human_readable_size
 
 RSYNC_CMD_BASE = "rsync -az --progress --stats --delete"
 
-SERVER = "ress@fold"
+SERVER = "ress@167.172.164.135"
 SRC = config.BASE_DIR
 DST = config.APP_NAME
 

@@ -15,6 +15,7 @@ class EntityAPI(Entity):
         self.extrafields = extrafields
 
     def validate_response(self, probe) -> bool:
+        print(probe)
         try:
             if probe.resource == self.expected:
                 return True
