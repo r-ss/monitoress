@@ -92,7 +92,7 @@ class ProbeManager:
 
         self.add_entity(EntityPing("grani_microtic", interval=15 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
         self.add_entity(EntityAPI("foldwrap", interval=15 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
-        self.add_entity(EntityAPI("figma_service", interval=20 * 60, url="https://foldwrap.com/api/v1/figma/status", look_for="result", expected="service ok", schema=FoldWrapFigmaServiceBM))
+        self.add_entity(EntityAPI("figma_service", interval=20 * 60, url="https://foldwrap.com/api/v1/figma/status", look_for="resource", expected="figma_to_dom_service_status", schema=FoldWrapFigmaServiceBM))
 
         self.add_entity(EntityBC("validators", interval=25 * 60))
 
