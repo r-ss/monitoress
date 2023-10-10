@@ -91,9 +91,14 @@ class ProbeManager:
         # self.add_entity(EntityTest("test_olny", interval=1 * 10, url="/nya/", look_for="status", expected="always true", schema=EntityTestStatusBM))
 
         self.add_entity(EntityPing("grani_microtic", interval=15 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
+        
+        
         self.add_entity(EntityAPI("foldwrap", interval=15 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
         self.add_entity(EntityAPI("figma_service", interval=20 * 60, url="https://foldwrap.com/api/v1/figma/status", look_for="resource", expected="figma_to_dom_service_status", schema=FoldWrapFigmaServiceBM))
+        self.add_entity(EntityAPI("foldwrap_deploytool", interval=45 * 60, url="https://foldwrap.com/deploy/info", look_for="resource", expected="foldwrap_deploytool", schema=FoldWrapAPIBM))
 
+        
+        
         self.add_entity(EntityBC("validators", interval=25 * 60))
 
         # self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
