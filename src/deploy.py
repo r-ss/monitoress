@@ -5,7 +5,7 @@ from utils import bytes_to_human_readable_size
 
 RSYNC_CMD_BASE = "rsync -az --progress --stats --delete"
 
-SERVER = "ress@167.172.164.135"
+SERVER = "ress@newfold"
 SRC = config.BASE_DIR
 DST = config.APP_NAME
 
@@ -32,7 +32,7 @@ def upload_sources():
 
 
 def restart_script_in_remote_tmux():
-    cmd = f"ssh {SERVER} -t 'tmux send-keys -t {config.APP_NAME} C-C C-U \"poetry run python {config.ENTRYPOINT}\" Enter'"
+    cmd = f"ssh {SERVER} -t 'tmux send-keys -t {config.APP_NAME} C-C C-U \"~/.local/bin/poetry run python {config.ENTRYPOINT}\" Enter'"
     success, output = run_command(cmd)
     if not success:
         log("restart remote tmux failed")
