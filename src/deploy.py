@@ -32,7 +32,7 @@ def upload_sources():
 
 
 def restart_script_in_remote_tmux():
-    cmd = f"ssh {SERVER} -t 'tmux send-keys -t {Config.APP_NAME} C-C C-U \"~/.local/bin/poetry run python {config.ENTRYPOINT}\" Enter'"
+    cmd = f"ssh {SERVER} -t 'tmux send-keys -t {Config.APP_NAME} C-C C-U \"~/.local/bin/poetry run python {Config.ENTRYPOINT}\" Enter'"
     success, output = run_command(cmd)
     if not success:
         log("restart remote tmux failed")

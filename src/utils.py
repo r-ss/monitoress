@@ -2,8 +2,10 @@ import asyncio
 from typing import Any, Awaitable
 
 # import os, sys
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+# from urllib.parse import urlencode
+# from urllib.request import Request, urlopen
+
+import httpx
 
 from config import Config
 
@@ -27,16 +29,28 @@ async def subprocess_call(cmd: str):
 #     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 
+# def send_message(message):
+#     if not Config.TELEGRAM_ENABLED:
+#         return
+#     request = Request(
+#         Config.NOTIFICATIONS_URL,
+#         urlencode({"message": message, "silent": False}).encode(),
+#     )
+#     # print(f'sending message{message}')
+#     response_json = urlopen(request).read().decode()
+#     return f'sended message "{message}"'
+
 def send_message(message):
-    if not Config.TELEGRAM_ENABLED:
-        return
-    request = Request(
-        Config.NOTIFICATIONS_URL,
-        urlencode({"message": message, "silent": False}).encode(),
-    )
-    # print(f'sending message{message}')
-    response_json = urlopen(request).read().decode()
-    return f'sended message "{message}"'
+    if not Config.PRODUCTION:  # Don't bother on autotests and in dev mode
+        return None
+
+    try:
+        with httpx.Client() as client:
+            data = {"message": f"{Config.APP_NAME}: {message}", "silent": False}
+            _ = client.post(Config.NOTIFICATIONS_URL, data=data)
+    except Exception as err:
+        print("Cannot send telegram message due to exception", err)
+        pass
 
 
 def bytes_to_human_readable_size(num, suffix="b"):
