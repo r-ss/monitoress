@@ -5,7 +5,7 @@ from typing import Any, Awaitable
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from config import config
+from config import Config
 
 
 async def run_sequence(*functions: Awaitable[Any]) -> None:
@@ -28,10 +28,10 @@ async def subprocess_call(cmd: str):
 
 
 def send_message(message):
-    if not config.TELEGRAM_ENABLED:
+    if not Config.TELEGRAM_ENABLED:
         return
     request = Request(
-        config.NOTIFICATIONS_URL,
+        Config.NOTIFICATIONS_URL,
         urlencode({"message": message, "silent": False}).encode(),
     )
     # print(f'sending message{message}')

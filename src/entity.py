@@ -5,7 +5,7 @@
 from ress_redis import RessRedisAbstraction
 from datetime import datetime
 
-from config import config
+from config import Config
 from log import log
 from utils import send_message
 
@@ -52,7 +52,7 @@ class Entity:
     def lastcheck_formatted(self) -> str:
         if not self.lastcheck:
             return ""
-        return self.lastcheck.strftime(config.DATETIME_FORMAT_HUMAN)
+        return self.lastcheck.strftime(Config.DATETIME_FORMAT_HUMAN)
 
     """ success increment """
 
@@ -93,10 +93,10 @@ class Entity:
 
     @property
     def is_too_early(self):
-        if config.TURBO:
+        if Config.TURBO:
             return False
         if self.lastcheck:
-            delta = datetime.now(config.TZ) - self.lastcheck
+            delta = datetime.now(Config.TZ) - self.lastcheck
             delta_seconds = round(delta.total_seconds())
             if delta_seconds < self.interval:
                 return True
@@ -152,7 +152,7 @@ class Entity:
             log(f"skip {self.name} because interval not reached", level="debug")
             return True
 
-        self.lastcheck = datetime.now(config.TZ)
+        self.lastcheck = datetime.now(Config.TZ)
 
         data = await self.send_probe_request()
         if not data:

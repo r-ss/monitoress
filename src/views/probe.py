@@ -1,11 +1,11 @@
 from datetime import datetime
 
 from fastapi import status
-from fastapi_utils.cbv import cbv
 from fastapi.responses import JSONResponse
-from fastapi_utils.inferring_router import InferringRouter
+from fastapi_restful.cbv import cbv
+from fastapi_restful.inferring_router import InferringRouter
 
-from config import config
+from config import Config
 
 from log import log
 
@@ -38,8 +38,8 @@ class SendProbeCBV:
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "client": config.APP_NAME,
-                "time_client": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
+                "client": Config.APP_NAME,
+                "time_client": datetime.now(Config.TZ).strftime(Config.DATETIME_FORMAT_HUMAN),
                 "entity_name": e.name,
                 "status": e.status,
                 "success_count": e.success_count,
@@ -56,8 +56,8 @@ class SendProbeCBV:
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "client": config.APP_NAME,
-                "time_client": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
+                "client": Config.APP_NAME,
+                "time_client": datetime.now(Config.TZ).strftime(Config.DATETIME_FORMAT_HUMAN),
                 "probes": probes,
             },
         )

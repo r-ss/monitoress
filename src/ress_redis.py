@@ -1,13 +1,13 @@
 import redis
 
-from config import config
+from config import Config
 
-prefix = config.APP_NAME # "redisproject"  # added to every key to minimize collisions risk
+prefix = Config.APP_NAME # "redisproject"  # added to every key to minimize collisions risk
 expiration = 10 * 60
 
 class RessRedisAbstraction:
     def __init__(self, host="localhost", port=6379, db=0):
-        self.r = redis.Redis(host=host, port=port, db=db, password=config.REDIS_PASS)
+        self.r = redis.Redis(host=host, port=port, db=db, password=Config.REDIS_PASS)
         # self.r = redis.Redis(host=host, port=port, db=db)
 
     def get(self, k):

@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 
 
-from config import config
+from config import Config
 
 from views.info import router as info_router
 from views.probe import router as send_probe
@@ -33,8 +33,8 @@ def timer_tick():
     asyncio.run(pm.check_all())
 
 
-scheduler = BackgroundScheduler(timezone=config.TZ)
-scheduler.add_job(timer_tick, "interval", seconds=config.CHECKS_TICK_INTERVAL)
+scheduler = BackgroundScheduler(timezone=Config.TZ)
+scheduler.add_job(timer_tick, "interval", seconds=Config.CHECKS_TICK_INTERVAL)
 
 app = FastAPI()
 testclient = TestClient(app)
@@ -59,7 +59,7 @@ for r in routers:
 
 
 def start_uvicorn_server():
-    uvicorn.run("main:app", host=config.HOST, port=config.PORT, reload=config.SERVER_WATCH_FILES, app_dir=str(config.ENTRYPOINT.parent))
+    uvicorn.run("main:app", host=Config.HOST, port=Config.PORT, reload=Config.SERVER_WATCH_FILES, app_dir=str(Config.ENTRYPOINT.parent))
     # asyncio.run(pm.check_all())
 
 

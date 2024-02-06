@@ -1,6 +1,6 @@
 import os
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 
 from entity import Entity
 
@@ -11,7 +11,8 @@ class ValidatorStatusBM(BaseModel):
 
 
 class ValidatorsBM(BaseModel):
-    __root__: List[ValidatorStatusBM]  # __root__
+    # __root__: List[ValidatorStatusBM]  # __root__
+    RootModel: List[ValidatorStatusBM]
 
     def __iter__(self):
         return iter(self.__root__)

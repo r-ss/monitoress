@@ -4,11 +4,11 @@ import platform
 # import subprocess
 
 from fastapi import status
-from fastapi_utils.cbv import cbv
 from fastapi.responses import JSONResponse
-from fastapi_utils.inferring_router import InferringRouter
+from fastapi_restful.cbv import cbv
+from fastapi_restful.inferring_router import InferringRouter
 
-from config import config
+from config import Config
 
 from ress_redis import RessRedisAbstraction
 
@@ -44,15 +44,15 @@ class InfoCBV:
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "resource": config.APP_NAME,
+                "resource": Config.APP_NAME,
                 # "git_revision_hash": git_revision_hash,
-                "datetime": datetime.now(config.TZ).strftime(config.DATETIME_FORMAT_HUMAN),
+                "datetime": datetime.now(Config.TZ).strftime(Config.DATETIME_FORMAT_HUMAN),
                 "os": os.name,
                 "platform": platform.system(),
                 "platform_release": platform.release(),
                 "python version": platform.python_version(),
-                "testing": config.TESTING_MODE,
-                "production": config.PRODUCTION,
+                "testing": Config.TESTING_MODE,
+                "production": Config.PRODUCTION,
                 # "load averages": f"{load1:.2f} {load5:.2f} {load15:.2f}",
                 # "redis_available": redis.ping(),
             },

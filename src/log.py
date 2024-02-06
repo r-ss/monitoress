@@ -1,6 +1,6 @@
 import sys
 from loguru import logger
-from config import config
+from config import Config
 
 # logger.remove(0)
 # logger.add(sys.stderr, format="<green>{time:YYYY-MM-DD at HH:mm:ss}</green> | <level>{message}</level>", colorize=True, backtrace=True, diagnose=True)
@@ -8,9 +8,9 @@ from config import config
 
 
 logger.remove(0)
-logger.add(sys.stderr, level=config.LOG_LEVEL, format="<green>{time:YYYY-MM-DD at HH:mm:ss}</green> | <level>{message}</level>", colorize=True)
+logger.add(sys.stderr, level=Config.LOG_LEVEL, format="<green>{time:YYYY-MM-DD at HH:mm:ss}</green> | <level>{message}</level>", colorize=True)
 logger.add(
-    config.LOG_FILE_PATH,
+    Config.LOG_FILE_PATH,
     level="WARNING",
     rotation="1 MB",
     retention="10 days",
