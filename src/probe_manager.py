@@ -90,19 +90,19 @@ class ProbeManager:
 
         # self.add_entity(EntityTest("test_olny", interval=1 * 10, url="/nya/", look_for="status", expected="always true", schema=EntityTestStatusBM))
 
-        self.add_entity(EntityPing("grani_microtic", interval=30 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
+        self.add_entity(EntityPing("grani_microtic", interval=12 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
         
         
-        self.add_entity(EntityAPI("foldwrap", interval=30 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
-        self.add_entity(EntityAPI("figma_service", interval=32 * 60, url="https://foldwrap.com/api/v1/figma/status", look_for="resource", expected="figma_to_dom_service_status", schema=FoldWrapFigmaServiceBM))
-        self.add_entity(EntityAPI("foldwrap_deploytool", interval=500 * 60, url="https://foldwrap.com/deploy/info", look_for="resource", expected="foldwrap_deploytool", schema=FoldWrapAPIBM))
+        self.add_entity(EntityAPI("foldwrap", interval=20 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
+        self.add_entity(EntityAPI("figma_service", interval=25 * 60, url="https://foldwrap.com/api/v1/figma/status", look_for="resource", expected="figma_to_dom_service_status", schema=FoldWrapFigmaServiceBM))
+        self.add_entity(EntityAPI("foldwrap_deploytool", interval=120 * 60, url="https://foldwrap.com/deploy/info", look_for="resource", expected="foldwrap_deploytool", schema=FoldWrapAPIBM))
 
-        self.add_entity(EntityBC("validators", interval=60 * 60))
+        self.add_entity(EntityBC("validators", interval=15 * 60))
 
         # self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
 
         self.add_entity(EntityAPI("energram_api", interval=180 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
-        self.add_entity(EntityAPI("energram_deploytool", interval=3000 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
+        # self.add_entity(EntityAPI("energram_deploytool", interval=3000 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
 
         # self.add_entity(EntityAPI("ursadate_api", interval=180 * 60, url="https://api.ursadate.com/info", look_for="resource", expected="ursadate", schema=EnergramAPIBM))
         # self.add_entity(EntityAPI("ursadate_deploytool", interval=3000 * 60, url="https://deploy.ursadate.com/info", look_for="resource", expected="ursa_deploytool", schema=EnergramAPIBM))

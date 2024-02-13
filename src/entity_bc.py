@@ -1,8 +1,10 @@
-import os
+# import os
 from typing import List
-from pydantic import BaseModel, RootModel
+from pydantic import BaseModel
 
 from entity import Entity
+
+from config import Config
 
 
 class ValidatorStatusBM(BaseModel):
@@ -11,8 +13,7 @@ class ValidatorStatusBM(BaseModel):
 
 
 class ValidatorsBM(BaseModel):
-    # __root__: List[ValidatorStatusBM]  # __root__
-    RootModel: List[ValidatorStatusBM]
+    data: List[ValidatorStatusBM]
 
     def __iter__(self):
         return iter(self.__root__)
@@ -28,19 +29,22 @@ class EntityBC(Entity):
     def __init__(self, name, interval=10, important=True) -> None:
         super().__init__(name, interval, important)
 
-        self.url = f"https://beaconcha.in/api/v1/validator/{os.environ.get('VALIDATORS')}"
+        self.url = f"https://beaconcha.in/api/v1/validator/{Config.VALIDATORS}"
 
     def process_probe(self, data):
+        # print(data)
         try:
             if data["status"] == "OK":
-                validators = ValidatorsBM.parse_obj(data["data"])
+                validators = ValidatorsBM.parse_obj(data)
             else:
                 self.add_error("validators status received not OK")
                 return None
         except Exception as ex:
             self.add_error(f"cannot parse validators for {self.name}")
             return None
-        return validators
+        
+        # print(validators)
+        return validators.data
 
     def validate_response(self, validators) -> bool:
         try:
