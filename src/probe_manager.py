@@ -101,7 +101,7 @@ class ProbeManager:
 
         # self.add_entity(EntityAPI("energram_api", interval=15 * 60, url="http://energram-api.ress.ws/info", look_for="resource", expected="energram_prototype", schema=EnergramAPIBM))
 
-        self.add_entity(EntityAPI("energram_api", interval=180 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
+        # self.add_entity(EntityAPI("energram_api", interval=180 * 60, url="https://api.energram.co/info", look_for="resource", expected="energram", schema=EnergramAPIBM))
         # self.add_entity(EntityAPI("energram_deploytool", interval=3000 * 60, url="http://deploy.energram.co/info", look_for="resource", expected="energram_deploytool", schema=EnergramAPIBM))
 
         # self.add_entity(EntityAPI("ursadate_api", interval=180 * 60, url="https://api.ursadate.com/info", look_for="resource", expected="ursadate", schema=EnergramAPIBM))
