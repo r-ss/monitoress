@@ -6,7 +6,10 @@ Implemented in Python on [FastAPI](https://fastapi.tiangolo.com) and [Pydantic](
 
 Also have a frontend part in repo [status.ress.ws](https://github.com/r-ss/status.ress.ws)
 
-Deployed to newfold DO dropler.
+Deployed to fold VDS @ Hetzner.
+
+To deploy code:
+rsync -e 'ssh' -thvr --progress --delete-after --exclude='.git' --exclude='.venv' --exclude='__pycache__' monitoress ress@fold:~/
 
 To run:
 1. create tmux session "monitoress"

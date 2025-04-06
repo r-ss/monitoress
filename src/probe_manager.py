@@ -90,12 +90,12 @@ class ProbeManager:
 
         # self.add_entity(EntityTest("test_olny", interval=1 * 10, url="/nya/", look_for="status", expected="always true", schema=EntityTestStatusBM))
 
-        self.add_entity(EntityPing("grani_microtic", interval=12 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
+        self.add_entity(EntityPing("grani_microtic", interval=10 * 60, host="grani.ress.ws", expect_in_output="171.25.165.250"))
         
         
-        self.add_entity(EntityAPI("foldwrap", interval=20 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
+        self.add_entity(EntityAPI("foldwrap", interval=10 * 60, url="https://foldwrap.com/api/v1/info", look_for="resource", expected="foldwrap", schema=FoldWrapAPIBM))
         # self.add_entity(EntityAPI("figma_service", interval=25 * 60, url="https://foldwrap.com/api/v1/figma-service/status", look_for="resource", expected="figma_to_dom_service_status", schema=FoldWrapFigmaServiceBM))
-        self.add_entity(EntityAPI("foldwrap_deploytool", interval=120 * 60, url="https://foldwrap.com/deploy/info", look_for="resource", expected="foldwrap_deploytool", schema=FoldWrapAPIBM))
+        self.add_entity(EntityAPI("foldwrap_deploytool", interval=90 * 60, url="https://foldwrap.com/deploy/info", look_for="resource", expected="foldwrap_deploytool", schema=FoldWrapAPIBM))
 
         self.add_entity(EntityBC("validators", interval=15 * 60))
 
